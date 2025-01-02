@@ -1,4 +1,4 @@
-package me.playgamesgo.inventorydropchance.Commands;
+package me.playgamesgo.inventorydropchance.commands;
 
 import java.util.List;
 

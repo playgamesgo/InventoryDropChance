@@ -1,6 +1,0 @@
-name: InventoryDropChance
-version: '${version}'
-main: me.playgamesgo.inventorydropchance.InventoryDropChance
-api-version: '1.16'
-authors: [playgamesgo]
-description: Change the drop rate of items in the inventory on death 

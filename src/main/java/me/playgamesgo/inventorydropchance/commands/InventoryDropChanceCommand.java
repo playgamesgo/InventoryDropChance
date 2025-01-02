@@ -1,4 +1,4 @@
-package me.playgamesgo.inventorydropchance.Commands;
+package me.playgamesgo.inventorydropchance.commands;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ public class InventoryDropChanceCommand {
     @Permission("inventorydropchance.reload")
     public static void reloadCommand(CommandSender sender) {
         InventoryDropChance.configFile.forceReload();
+        InventoryDropChance.globalConfig.load(true);
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.configFile.getString("reloaded")));
     }
 
