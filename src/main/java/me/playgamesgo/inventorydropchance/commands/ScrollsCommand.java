@@ -41,7 +41,17 @@ public class ScrollsCommand {
                     List<String> lore = InventoryDropChance.configFile.getStringList("scrollsLore");
                     lore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
                     lore.replaceAll(textToTranslate -> textToTranslate.replace("%chance%", chance + "%"));
-                    meta.setLore(lore);
+                    if (InventoryDropChance.configFile.getBoolean("loreOverwriteMode")) {
+                        meta.setLore(lore);
+                    } else {
+                        List<String> currentLore = meta.getLore();
+                        if (currentLore != null) {
+                            currentLore.addAll(lore);
+                            meta.setLore(currentLore);
+                        } else {
+                            meta.setLore(lore);
+                        }
+                    }
                     item.setItemMeta(meta);
                 }
                 NBTItem nbtItem = new NBTItem(item);

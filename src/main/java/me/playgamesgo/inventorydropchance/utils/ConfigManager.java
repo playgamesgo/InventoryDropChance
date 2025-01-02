@@ -41,6 +41,9 @@ public class ConfigManager {
         configFile.setDefault("ignoredWorlds", ignoredWorlds);
 
         configFile.setDefault("skipCurseOfVanishingItems", false);
+
+        configFile.setDefault("loreOverwriteMode", true);
+
         configFile.setDefault("enableScrolls", true);
         List<String> scrollsLore = new ArrayList<>();
         scrollsLore.add("&6This item is a scroll!");

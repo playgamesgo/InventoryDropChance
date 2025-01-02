@@ -46,7 +46,17 @@ public class MakeNoDropCommand {
                         }
                         lore.replaceAll(textToTranslate -> textToTranslate.replaceAll("%chance%", String.valueOf(chance)));
                         lore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
-                        meta.setLore(lore);
+                        if (InventoryDropChance.configFile.getBoolean("loreOverwriteMode")) {
+                            meta.setLore(lore);
+                        } else {
+                            List<String> currentLore = meta.getLore();
+                            if (currentLore != null) {
+                                currentLore.addAll(lore);
+                                meta.setLore(currentLore);
+                            } else {
+                                meta.setLore(lore);
+                            }
+                        }
                         item.setItemMeta(meta);
                     }
                     NBTItem nbtItem = new NBTItem(item);
