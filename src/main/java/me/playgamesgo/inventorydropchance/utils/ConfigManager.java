@@ -31,6 +31,10 @@ public class ConfigManager {
         noDropLore.add("&6This item will not drop on death!");
         configFile.setDefault("noDropLore", noDropLore);
 
+        List<String> noDropChanceLore = new ArrayList<>();
+        noDropChanceLore.add("&6This item has a %chance%% chance to not drop on death!");
+        configFile.setDefault("noDropChanceLore", noDropChanceLore);
+
         List<String> ignoredWorlds = new ArrayList<>();
         ignoredWorlds.add("exampleWorld");
         ignoredWorlds.add("exampleWorld2");

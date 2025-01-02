@@ -41,6 +41,10 @@ public class MakeNoDropCommand {
                     if (addLore) {
                         ItemMeta meta = item.getItemMeta();
                         List<String> lore = InventoryDropChance.configFile.getStringList("noDropLore");
+                        if (chance != 100) {
+                            lore = InventoryDropChance.configFile.getStringList("noDropChanceLore");
+                        }
+                        lore.replaceAll(textToTranslate -> textToTranslate.replaceAll("%chance%", String.valueOf(chance)));
                         lore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
                         meta.setLore(lore);
                         item.setItemMeta(meta);
