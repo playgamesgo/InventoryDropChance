@@ -1,4 +1,4 @@
-package me.playgamesgo.inventorydropchance.utils;
+package me.playgamesgo.inventorydropchance.configs;
 
 import de.leonhard.storage.Config;
 import de.leonhard.storage.internal.settings.ReloadSettings;
@@ -6,8 +6,8 @@ import de.leonhard.storage.internal.settings.ReloadSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigManager {
-    public ConfigManager(Config configFile) {
+public class LegacyConfig {
+    public LegacyConfig(Config configFile) {
         configFile.setReloadSettings(ReloadSettings.INTELLIGENT);
 
         configFile.setDefault("onlyPlayer", "&e[&6InventoryDropChance&e] &cOnly players can use this command!");

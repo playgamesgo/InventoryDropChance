@@ -1,4 +1,4 @@
-package me.playgamesgo.inventorydropchance.utils;
+package me.playgamesgo.inventorydropchance.configs;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;

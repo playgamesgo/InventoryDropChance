@@ -8,6 +8,7 @@ import dev.jorel.commandapi.annotations.arguments.AIntegerArgument;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 @Command("inventorydropchance")
 @Alias("idc")
@@ -21,33 +22,34 @@ public class InventoryDropChanceCommand {
     @Subcommand("reload")
     @Permission("inventorydropchance.reload")
     public static void reloadCommand(CommandSender sender) {
-        InventoryDropChance.configFile.forceReload();
+        InventoryDropChance.config.load(true);
+        InventoryDropChance.lang.load(true);
         InventoryDropChance.globalConfig.load(true);
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.configFile.getString("reloaded")));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.lang.getReloaded()));
     }
 
     @Subcommand("help")
     public static void helpCommand(CommandSender sender) {
-        List<String> help = InventoryDropChance.configFile.getStringList("help");
+        List<String> help = InventoryDropChance.lang.getHelp();
         for (String line : help)
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
     }
 
     @Subcommand("makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(CommandSender sender, @ABooleanArgument boolean lore, @AIntegerArgument int chance) {
-        MakeNoDropCommand.makeNoDropCommand(sender, lore, chance);
+    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore, @AIntegerArgument int chance) {
+        MakeNoDropCommand.makeNoDropCommand(player, lore, chance);
     }
 
     @Subcommand("makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(CommandSender sender, @ABooleanArgument boolean lore) {
-        MakeNoDropCommand.makeNoDropCommand(sender, lore);
+    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore) {
+        MakeNoDropCommand.makeNoDropCommand(player, lore);
     }
 
     @Subcommand("makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(CommandSender sender) {
-        MakeNoDropCommand.makeNoDropCommand(sender);
+    public static void makeNoDropCommand(Player player) {
+        MakeNoDropCommand.makeNoDropCommand(player);
     }
 }

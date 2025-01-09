@@ -18,7 +18,7 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
-        for (String ignoredWorld : InventoryDropChance.configFile.getStringList("ignoredWorlds")) {
+        for (String ignoredWorld : InventoryDropChance.config.getIgnoredWorlds()) {
             if (player.getWorld() == Bukkit.getWorld(ignoredWorld))
                 return;
         }
@@ -39,7 +39,7 @@ public class PlayerDeathListener implements Listener {
         for (ItemStack item : items) {
             if (item != null) {
                 if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE) &&
-                        InventoryDropChance.configFile.getBoolean("skipCurseOfVanishingItems")) {
+                        InventoryDropChance.config.isSkipCurseOfVanishingItems()) {
                     player.getInventory().remove(item);
                     continue;
                 }
