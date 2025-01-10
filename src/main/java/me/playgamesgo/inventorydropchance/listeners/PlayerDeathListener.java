@@ -37,51 +37,54 @@ public class PlayerDeathListener implements Listener {
         ItemStack[] items = playerInventory.getContents();
 
         for (ItemStack item : items) {
-            if (item != null) {
-                if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE) &&
-                        InventoryDropChance.config.isSkipCurseOfVanishingItems()) {
-                    player.getInventory().remove(item);
+            if (item == null) continue;
+
+            if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE) &&
+                    InventoryDropChance.config.isSkipCurseOfVanishingItems()) {
+                if (playerInventory.getItemInOffHand().equals(item)) {
+                    playerInventory.setItemInOffHand(null);
                     continue;
                 }
+                playerInventory.remove(item);
+                continue;
+            }
 
-                Random rand = new Random();
-                int n = rand.nextInt(100);
-                if (n > max) {
-                    NBTItem nbtItem = new NBTItem(item);
-                    if (nbtItem.getBoolean("NO_DROP")) continue; // Legacy support (I think, I don't remember)
+            Random rand = new Random();
+            int n = rand.nextInt(100);
+            if (n > max) {
+                NBTItem nbtItem = new NBTItem(item);
+                if (nbtItem.getBoolean("NO_DROP")) continue; // Legacy support (I think, I don't remember)
 
-                    if (nbtItem.getBoolean("MAY_NO_DROP")) {
-                        int chance = nbtItem.getInteger("NO_DROP_CHANCE");
+                if (nbtItem.getBoolean("MAY_NO_DROP")) {
+                    int chance = nbtItem.getInteger("NO_DROP_CHANCE");
+                    if (n > chance) {
+                        removeItem(player, playerInventory, item);
+                    }
+                } else {
+                    if (InventoryDropChance.globalConfig.getGlobalValues().containsKey(item.getType())) {
+                        int chance = InventoryDropChance.globalConfig.getGlobalValues().get(item.getType());
                         if (n > chance) {
-                            if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-                                player.getInventory().remove(item);
-                                continue;
-                            }
-                            player.getWorld().dropItemNaturally(player.getLocation(), item);
-                            item.setAmount(0);
+                            removeItem(player, playerInventory, item);
                         }
                     } else {
-                        if (InventoryDropChance.globalConfig.getGlobalValues().containsKey(item.getType())) {
-                            int chance = InventoryDropChance.globalConfig.getGlobalValues().get(item.getType());
-                            if (n > chance) {
-                                if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-                                    player.getInventory().remove(item);
-                                    continue;
-                                }
-                                player.getWorld().dropItemNaturally(player.getLocation(), item);
-                                item.setAmount(0);
-                            }
-                        } else {
-                            if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-                                player.getInventory().remove(item);
-                                continue;
-                            }
-                            player.getWorld().dropItemNaturally(player.getLocation(), item);
-                            item.setAmount(0);
-                        }
+                        removeItem(player, playerInventory, item);
                     }
                 }
             }
+
         }
+    }
+
+    private void removeItem(Player player, PlayerInventory playerInventory, ItemStack item) {
+        if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
+            if (playerInventory.getItemInOffHand().equals(item)) {
+                playerInventory.setItemInOffHand(null);
+            } else {
+                playerInventory.remove(item);
+            }
+            return;
+        }
+        player.getWorld().dropItemNaturally(player.getLocation(), item);
+        item.setAmount(0);
     }
 }
