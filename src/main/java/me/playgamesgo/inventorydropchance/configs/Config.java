@@ -19,5 +19,8 @@ public class Config extends OkaeriConfig {
     @Comment("If true, the plugin will overwrite the existing lore of the item, else it will append the lore")
     private boolean overwriteLore = true;
 
+    @Comment("If true, the plugin will inverse the chance number that will added to the lore")
+    private boolean inverseLoreChance = false;
+
     public boolean enableScrolls = true;
 }

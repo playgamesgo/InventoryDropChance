@@ -46,7 +46,13 @@ public class MakeNoDropCommand {
         if (lore) {
             InventoryDropChance.lang.load(true);
             List<String> loreList = chance == 100 ? InventoryDropChance.lang.getNoDropLore() : InventoryDropChance.lang.getNoDropChanceLore();
-            loreList.replaceAll(textToTranslate -> textToTranslate.replaceAll("%chance%", chance + ""));
+
+            if (InventoryDropChance.config.isInverseLoreChance()) {
+                chance = 100 - chance;
+            }
+
+            int finalChance = chance;
+            loreList.replaceAll(textToTranslate -> textToTranslate.replaceAll("%chance%", finalChance + ""));
             loreList.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
 
 
