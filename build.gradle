@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.playgamesgo'
-version = '1.4.1'
+version = '1.4.2'
 
 repositories {
     mavenCentral()
@@ -100,6 +100,6 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.1")
     }
 }
