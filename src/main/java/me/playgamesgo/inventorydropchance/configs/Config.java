@@ -16,6 +16,9 @@ public class Config extends OkaeriConfig {
     @Comment("If true, a chance to save item will be ignored if item has Curse of Vanishing")
     private boolean skipCurseOfVanishingItems = false;
 
+    @Comment("If true, a drop chance will be applied to the all items in same stack, else each item in one stack will have individual chance")
+    private boolean applyChanceToItemStack = true;
+
     @Comment("If true, the plugin will overwrite the existing lore of the item, else it will append the lore")
     private boolean overwriteLore = true;
 
