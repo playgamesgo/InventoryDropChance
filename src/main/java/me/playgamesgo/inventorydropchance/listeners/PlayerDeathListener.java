@@ -57,10 +57,12 @@ public class PlayerDeathListener implements Listener {
         }
 
         int max = 0;
-        for (int x = 100; x > 0; x--) {
-            if (player.hasPermission("inventorydropchance." + x)) {
-                max = x;
-                break;
+        if (InventoryDropChance.config.ignorePermissions) {
+            for (int x = 100; x > 0; x--) {
+                if (player.hasPermission("inventorydropchance." + x)) {
+                    max = x;
+                    break;
+                }
             }
         }
 
@@ -115,7 +117,6 @@ public class PlayerDeathListener implements Listener {
                     }
                 }
             }
-
         }
     }
 

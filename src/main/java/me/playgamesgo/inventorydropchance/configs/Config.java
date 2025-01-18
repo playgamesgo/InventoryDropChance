@@ -26,4 +26,6 @@ public class Config extends OkaeriConfig {
     private boolean inverseLoreChance = false;
 
     public boolean enableScrolls = true;
+
+    public boolean ignorePermissions = false;
 }

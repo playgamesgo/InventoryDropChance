@@ -33,9 +33,9 @@ public class GlobalConfig extends OkaeriConfig {
     }
 
     @Comment("By wich rule the chance will be applied")
-    @Comment("FIRST_SUCCESS - each order will be checked, if chance can be applied, but didn't happen, next order will be checked until success or end of the list")
-    @Comment("FIRST_APPLY - each order will be checked, if chance can be applied, it will be apply and break the loop, in any case,")
-    @Comment("  even if chance can't be applied, next order will be checked until end of the list")
+    @Comment("FIRST_SUCCESS: Each order will be checked; if chance can be applied but didn't happen, the next order will be checked until success or the end of the list.")
+    @Comment("FIRST_APPLY: Each order will be checked; if a chance can be applied, it will be applied and break the loop. In any case,")
+    @Comment("  even if the chance didn't work out, the next order will be checked until the end of the list.")
     private OrderType orderType = OrderType.FIRST_SUCCESS;
 
     @Comment()
