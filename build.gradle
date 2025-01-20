@@ -37,6 +37,10 @@ repositories {
         name = "mirageRepositoryReleases"
         url = uri("https://repo.mirage-play.com/releases")
     }
+    maven {
+        name = "matteodev"
+        url = "https://maven.devs.beer"
+    }
 }
 
 dependencies {
@@ -60,6 +64,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${project.lombokVersion}"
 
     implementation "de.tr7zw:item-nbt-api:2.14.1"
+    compileOnly "dev.lone:api-itemsadder:4.0.2-beta-release-11"
 }
 
 def targetJavaVersion = 17

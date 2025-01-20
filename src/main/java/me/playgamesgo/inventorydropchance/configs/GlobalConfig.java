@@ -14,14 +14,18 @@ import java.util.Map;
 @Setter
 public class GlobalConfig extends OkaeriConfig {
     public enum Order {
+        ITEMSADDDER,
+        CUSTOMMODELDATA,
         MATERIAL,
         WORLD,
         DEFAULT
     }
 
     @Comment("Order of chance calculation, chance given by the command will have the highest priority and will work as FIRST_APPLY for that item")
-    @Comment("If element is not present, it will be ignored, possible values: MATERIAL, WORLD, DEFAULT")
+    @Comment("If element is not present, it will be ignored, possible values: ITEMSADDDER, CUSTOMMODELDATA, MATERIAL, WORLD, DEFAULT")
     private LinkedList<Order> chanceOrder = new LinkedList<>(List.of(
+            Order.ITEMSADDDER,
+            Order.CUSTOMMODELDATA,
             Order.MATERIAL,
             Order.WORLD,
             Order.DEFAULT
@@ -54,5 +58,19 @@ public class GlobalConfig extends OkaeriConfig {
     private Map<Material, Integer> globalValues = Map.of(
             Material.STICK, 50,
             Material.STONE, 10
+    );
+
+    @Comment()
+    @Comment("Default drop chance for all items per custom model data, put {} to disable")
+    private Map<Integer, Integer> customModelDataValues = Map.of(
+            1, 40,
+            2, 10
+    );
+
+    @Comment()
+    @Comment("Default drop chance for all items from ItemsAdder, requires ItemsAdder plugin, put {} to disable")
+    private Map<String, Integer> itemsAdderValues = Map.of(
+            "example_namespace:example_item", 75,
+            "example_namespace:example_item2", 25
     );
 }

@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import dev.lone.itemsadder.api.CustomStack;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
 import org.bukkit.Bukkit;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -20,6 +23,33 @@ public class PlayerDeathListener implements Listener {
     private final Map<GlobalConfig.Order, Runnable> orders = new HashMap<>();
 
     public PlayerDeathListener() {
+        if (InventoryDropChance.itemsAdder) {
+            orders.put(GlobalConfig.Order.ITEMSADDDER, (item, player) -> {
+                Random random = new Random();
+
+                CustomStack stack = CustomStack.byItemStack(item);
+                if (stack != null) {
+                    if (InventoryDropChance.globalConfig.getItemsAdderValues().containsKey(stack.getNamespacedID())) {
+                        int chance = InventoryDropChance.globalConfig.getItemsAdderValues().get(stack.getNamespacedID());
+                        return random.nextInt(100) <= chance;
+                    }
+                }
+                return null;
+            });
+        } else
+            InventoryDropChance.instance.getLogger().warning("ItemsAdder is not installed, but ITEMSADDER order is presented, ignoring");
+
+        orders.put(GlobalConfig.Order.CUSTOMMODELDATA, (item, player) -> {
+            Random random = new Random();
+
+            if (InventoryDropChance.globalConfig.getCustomModelDataValues().containsKey(item.getItemMeta().getCustomModelData())) {
+                int chance = InventoryDropChance.globalConfig.getCustomModelDataValues().get(item.getItemMeta().getCustomModelData());
+                return random.nextInt(100) <= chance;
+            } else {
+                return null;
+            }
+        });
+
         orders.put(GlobalConfig.Order.MATERIAL, (item, player) -> {
             Random random = new Random();
 
@@ -87,6 +117,7 @@ public class PlayerDeathListener implements Listener {
             Random rand = new Random();
             int n = rand.nextInt(100);
             if (n > max) {
+
                 NBTItem nbtItem = new NBTItem(item);
                 if (nbtItem.getBoolean("NO_DROP")) continue; // Legacy support (I think, I don't remember)
 
@@ -118,6 +149,13 @@ public class PlayerDeathListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public static void onPlayerRespawn(PlayerRespawnEvent event) {
+        NBT.modify(event.getPlayer(), readWriteNBT -> {
+            readWriteNBT.setInteger("Score", 0);
+        });
     }
 
     private boolean trySave(ItemStack item, Player player) {

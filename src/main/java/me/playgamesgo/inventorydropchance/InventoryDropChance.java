@@ -15,10 +15,12 @@ import me.playgamesgo.inventorydropchance.configs.Config;
 import me.playgamesgo.inventorydropchance.configs.LegacyConfig;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
 import me.playgamesgo.inventorydropchance.configs.LangConfig;
+import me.playgamesgo.plugin.annotation.dependency.SoftDependency;
 import me.playgamesgo.plugin.annotation.plugin.ApiVersion;
 import me.playgamesgo.plugin.annotation.plugin.Description;
 import me.playgamesgo.plugin.annotation.plugin.Plugin;
 import me.playgamesgo.plugin.annotation.plugin.author.Author;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,11 +32,13 @@ import java.io.IOException;
 @ApiVersion(ApiVersion.Target.v1_16)
 @Author("playgamesgo")
 @Description("Change the drop rate of items in the inventory on death")
+@SoftDependency("ItemsAdder")
 public final class InventoryDropChance extends JavaPlugin {
     public static InventoryDropChance instance;
     public static Config config;
     public static LangConfig lang;
     public static GlobalConfig globalConfig;
+    public static boolean itemsAdder = false;
 
     public void onLoad() {
         CommandAPI.onLoad((new CommandAPIBukkitConfig(this)).verboseOutput(false));
@@ -133,6 +137,11 @@ public final class InventoryDropChance extends JavaPlugin {
         }
 
         CommandAPI.onEnable();
+
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
+            itemsAdder = true;
+            getLogger().info("ItemsAdder detected, support for custom items added");
+        }
     }
 
     public void onDisable() {
