@@ -6,6 +6,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import eu.okaeri.configs.yaml.bukkit.serdes.SerdesBukkit;
+import me.playgamesgo.inventorydropchance.commands.IDCDebugCommand;
 import me.playgamesgo.inventorydropchance.commands.InventoryDropChanceCommand;
 import me.playgamesgo.inventorydropchance.commands.MakeNoDropCommand;
 import me.playgamesgo.inventorydropchance.commands.ScrollsCommand;
@@ -129,6 +130,7 @@ public final class InventoryDropChance extends JavaPlugin {
 
         pluginManager.registerEvents(new PlayerDeathListener(), this);
 
+        if (false) CommandAPI.registerCommand(IDCDebugCommand.class);
         CommandAPI.registerCommand(InventoryDropChanceCommand.class);
         CommandAPI.registerCommand(MakeNoDropCommand.class);
         if (config.isEnableScrolls()) {

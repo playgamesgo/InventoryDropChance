@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class PlayerDeathListener implements Listener {
-    private final Map<GlobalConfig.Order, Runnable> orders = new HashMap<>();
+    private static final Map<GlobalConfig.Order, Runnable> orders = new HashMap<>();
 
     public PlayerDeathListener() {
         if (InventoryDropChance.itemsAdder) {
@@ -42,7 +42,8 @@ public class PlayerDeathListener implements Listener {
         orders.put(GlobalConfig.Order.CUSTOMMODELDATA, (item, player) -> {
             Random random = new Random();
 
-            if (InventoryDropChance.globalConfig.getCustomModelDataValues().containsKey(item.getItemMeta().getCustomModelData())) {
+            if (item.getItemMeta().hasCustomModelData() &&
+                    InventoryDropChance.globalConfig.getCustomModelDataValues().containsKey(item.getItemMeta().getCustomModelData())) {
                 int chance = InventoryDropChance.globalConfig.getCustomModelDataValues().get(item.getItemMeta().getCustomModelData());
                 return random.nextInt(100) <= chance;
             } else {
@@ -106,11 +107,7 @@ public class PlayerDeathListener implements Listener {
 
             if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE) &&
                     InventoryDropChance.config.isSkipCurseOfVanishingItems()) {
-                if (playerInventory.getItemInOffHand().equals(item)) {
-                    playerInventory.setItemInOffHand(null);
-                    continue;
-                }
-                playerInventory.remove(item);
+                removeCurseOfVanishingItem(playerInventory, item);
                 continue;
             }
 
@@ -160,6 +157,7 @@ public class PlayerDeathListener implements Listener {
 
     private boolean trySave(ItemStack item, Player player) {
         for (GlobalConfig.Order order : InventoryDropChance.globalConfig.getChanceOrder()) {
+            if (!orders.containsKey(order)) continue;
             Boolean result = orders.get(order).run(item, player);
             if (InventoryDropChance.globalConfig.getOrderType() == GlobalConfig.OrderType.FIRST_SUCCESS) {
                 if (result != null && result) return true;
@@ -172,11 +170,7 @@ public class PlayerDeathListener implements Listener {
 
     private void removeItem(Player player, PlayerInventory playerInventory, ItemStack item) {
         if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-            if (playerInventory.getItemInOffHand().equals(item)) {
-                playerInventory.setItemInOffHand(null);
-            } else {
-                playerInventory.remove(item);
-            }
+            removeCurseOfVanishingItem(playerInventory, item);
             return;
         }
         player.getWorld().dropItemNaturally(player.getLocation(), item);
@@ -190,10 +184,39 @@ public class PlayerDeathListener implements Listener {
                 else item.setAmount(item.getAmount() - 1);
 
                 playerInventory.setItemInOffHand(item);
-            } else {
-                if (item.getAmount() == 1) playerInventory.remove(item);
-                else item.setAmount(item.getAmount() - 1);
+                return;
             }
+            if (playerInventory.getHelmet() != null && playerInventory.getHelmet().equals(item)) {
+                if (item.getAmount() <= 1) item = null;
+                else item.setAmount(item.getAmount() - 1);
+
+                playerInventory.setHelmet(item);
+                return;
+            }
+            if (playerInventory.getChestplate() != null && playerInventory.getChestplate().equals(item)) {
+                if (item.getAmount() <= 1) item = null;
+                else item.setAmount(item.getAmount() - 1);
+
+                playerInventory.setChestplate(item);
+                return;
+            }
+            if (playerInventory.getLeggings() != null && playerInventory.getLeggings().equals(item)) {
+                if (item.getAmount() <= 1) item = null;
+                else item.setAmount(item.getAmount() - 1);
+
+                playerInventory.setLeggings(item);
+                return;
+            }
+            if (playerInventory.getBoots() != null && playerInventory.getBoots().equals(item)) {
+                if (item.getAmount() <= 1) item = null;
+                else item.setAmount(item.getAmount() - 1);
+
+                playerInventory.setBoots(item);
+                return;
+            }
+
+            if (item.getAmount() == 1) playerInventory.remove(item);
+            else item.setAmount(item.getAmount() - 1);
             return;
         }
         ItemStack singleItem = item.clone();
@@ -201,6 +224,30 @@ public class PlayerDeathListener implements Listener {
 
         player.getWorld().dropItemNaturally(player.getLocation(), singleItem);
         item.setAmount(item.getAmount() - 1);
+    }
+
+    private void removeCurseOfVanishingItem(PlayerInventory playerInventory, ItemStack item) {
+        if (playerInventory.getItemInOffHand().equals(item)) {
+            playerInventory.setItemInOffHand(null);
+            return;
+        }
+        if (playerInventory.getHelmet() != null && playerInventory.getHelmet().equals(item)) {
+            playerInventory.setHelmet(null);
+            return;
+        }
+        if (playerInventory.getChestplate() != null && playerInventory.getChestplate().equals(item)) {
+            playerInventory.setChestplate(null);
+            return;
+        }
+        if (playerInventory.getLeggings() != null && playerInventory.getLeggings().equals(item)) {
+            playerInventory.setLeggings(null);
+            return;
+        }
+        if (playerInventory.getBoots() != null && playerInventory.getBoots().equals(item)) {
+            playerInventory.setBoots(null);
+            return;
+        }
+        playerInventory.remove(item);
     }
 
     @FunctionalInterface
