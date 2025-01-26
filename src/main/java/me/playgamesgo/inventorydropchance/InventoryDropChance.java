@@ -141,8 +141,6 @@ public final class InventoryDropChance extends JavaPlugin {
 
         CommandAPI.onEnable();
 
-        getLogger().info("Plugin List: " + Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(org.bukkit.plugin.Plugin::getName).reduce((a, b) -> a + ", " + b).orElse(""));
-
         if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().anyMatch(plugin -> plugin.getName().equals("ItemsAdder"))) {
             itemsAdder = true;
             getLogger().info("ItemsAdder detected, support for custom items added");
