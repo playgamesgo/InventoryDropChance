@@ -28,6 +28,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Plugin(name = "InventoryDropChance", version = "${version}")
 @ApiVersion(ApiVersion.Target.v1_16)
@@ -140,7 +141,9 @@ public final class InventoryDropChance extends JavaPlugin {
 
         CommandAPI.onEnable();
 
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
+        getLogger().info("Plugin List: " + Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(org.bukkit.plugin.Plugin::getName).reduce((a, b) -> a + ", " + b).orElse(""));
+
+        if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().anyMatch(plugin -> plugin.getName().equals("ItemsAdder"))) {
             itemsAdder = true;
             getLogger().info("ItemsAdder detected, support for custom items added");
         }
