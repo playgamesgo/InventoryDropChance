@@ -1,11 +1,11 @@
 package me.playgamesgo.inventorydropchance.commands;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import dev.jorel.commandapi.annotations.Command;
-import dev.jorel.commandapi.annotations.Default;
-import dev.jorel.commandapi.annotations.Permission;
-import dev.jorel.commandapi.annotations.arguments.ABooleanArgument;
-import dev.jorel.commandapi.annotations.arguments.AIntegerArgument;
+import dev.rollczi.litecommands.annotations.argument.Arg;
+import dev.rollczi.litecommands.annotations.command.Command;
+import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.execute.ExecuteDefault;
+import dev.rollczi.litecommands.annotations.permission.Permission;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,21 +14,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-@Command("scrolls")
+@Command(name = "scrolls")
 @Permission("inventorydropchance.scrolls")
 public class ScrollsCommand {
-    @Default
-    public static void makeNoDropCommand(Player player) {
+    @ExecuteDefault
+    public void makeNoDropCommand(@Context Player player) {
         makeNoDropCommand(player, false, 100);
     }
 
-    @Default
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore) {
+    @ExecuteDefault
+    public void makeNoDropCommand(@Context Player player, @Arg boolean lore) {
         makeNoDropCommand(player, lore, 100);
     }
 
-    @Default
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore, @AIntegerArgument int chance) {
+    @ExecuteDefault
+    public void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg int chance) {
         if (!player.hasPermission("inventorydropchance.scrolls")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.lang.getNoPermission()));
             return;

@@ -1,7 +1,8 @@
 package me.playgamesgo.inventorydropchance.commands;
 
-import dev.jorel.commandapi.annotations.Command;
-import dev.jorel.commandapi.annotations.Subcommand;
+import dev.rollczi.litecommands.annotations.command.Command;
+import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.execute.Execute;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -10,10 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Command("idcdebug")
+@Command(name = "idcdebug")
 public class IDCDebugCommand {
-    @Subcommand("givedefault")
-    public static void giveDefaultCommand(Player player) {
+    @Execute(name = "givedefault")
+    public void giveDefaultCommand(@Context Player player) {
         try {
             player.getInventory().clear();
             player.setOp(true);
@@ -35,8 +36,8 @@ public class IDCDebugCommand {
         }
     }
 
-    @Subcommand("givecurse")
-    public static void giveCurseCommand(Player player) {
+    @Execute(name = "givecurse")
+    public void giveCurseCommand(@Context Player player) {
         try {
             player.getInventory().clear();
             player.setOp(true);
@@ -59,8 +60,8 @@ public class IDCDebugCommand {
         }
     }
 
-    @Subcommand("givecursearmor")
-    public static void giveCurseArmorCommand(Player player) {
+    @Execute(aliases = "givecursearmor")
+    public static void giveCurseArmorCommand(@Context Player player) {
         player.getInventory().clear();
         player.setOp(true);
         player.getInventory().setHeldItemSlot(0);
