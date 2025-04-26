@@ -1,7 +1,7 @@
 package me.playgamesgo.inventorydropchance;
 
-import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.rollczi.litecommands.LiteCommands;
+import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
@@ -10,7 +10,7 @@ import me.playgamesgo.inventorydropchance.commands.IDCDebugCommand;
 import me.playgamesgo.inventorydropchance.commands.InventoryDropChanceCommand;
 import me.playgamesgo.inventorydropchance.commands.MakeNoDropCommand;
 import me.playgamesgo.inventorydropchance.commands.ScrollsCommand;
-import me.playgamesgo.inventorydropchance.listeners.InventoryClickListener;
+import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
 import me.playgamesgo.inventorydropchance.listeners.PlayerDeathListener;
 import me.playgamesgo.inventorydropchance.configs.Config;
 import me.playgamesgo.inventorydropchance.configs.LegacyConfig;
@@ -22,6 +22,8 @@ import me.playgamesgo.plugin.annotation.plugin.Description;
 import me.playgamesgo.plugin.annotation.plugin.Plugin;
 import me.playgamesgo.plugin.annotation.plugin.author.Author;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,14 +39,11 @@ import java.util.Arrays;
 @SoftDependency("ItemsAdder")
 public final class InventoryDropChance extends JavaPlugin {
     public static InventoryDropChance instance;
+    public static LiteCommands<CommandSender> liteCommands;
     public static Config config;
     public static LangConfig lang;
     public static GlobalConfig globalConfig;
     public static boolean itemsAdder = false;
-
-    public void onLoad() {
-        CommandAPI.onLoad((new CommandAPIBukkitConfig(this)).verboseOutput(false));
-    }
 
     public void onEnable() {
         instance = this;
@@ -115,8 +114,8 @@ public final class InventoryDropChance extends JavaPlugin {
             lang.setNoDropGiven(legacyConfig.getString("noDropGiven"));
             lang.setNoItemInHand(legacyConfig.getString("noItemInHand"));
             lang.setReloaded(legacyConfig.getString("reloaded"));
+            lang.setInvalidUsage(legacyConfig.getString("noArgument"));
             lang.setInvalidArgument(legacyConfig.getString("invalidArgument"));
-            lang.setNoArgument(legacyConfig.getString("noArgument"));
             lang.setScrollGiven(legacyConfig.getString("scrollGiven"));
             lang.setHelp(legacyConfig.getStringList("help"));
             lang.setNoDropLore(legacyConfig.getStringList("noDropLore"));
@@ -131,15 +130,19 @@ public final class InventoryDropChance extends JavaPlugin {
 
         pluginManager.registerEvents(new PlayerDeathListener(), this);
 
-        if (false) CommandAPI.registerCommand(IDCDebugCommand.class);
-        CommandAPI.registerCommand(InventoryDropChanceCommand.class);
-        CommandAPI.registerCommand(MakeNoDropCommand.class);
-        if (config.isEnableScrolls()) {
-            CommandAPI.registerCommand(ScrollsCommand.class);
-            pluginManager.registerEvents(new InventoryClickListener(), this);
-        }
-
-        CommandAPI.onEnable();
+        liteCommands = LiteBukkitFactory.builder("inventorydropchance", this)
+                .commands(
+                        new IDCDebugCommand(),
+                        new InventoryDropChanceCommand(),
+                        new MakeNoDropCommand(),
+                        new ScrollsCommand()
+                )
+                .argument(ChanceArgument.class, new ChanceArgument(100))
+                .missingPermission((invocation, missingPermissions, chain) ->
+                        invocation.sender().sendMessage(ChatColor.translateAlternateColorCodes('&', lang.getNoPermission())))
+                .invalidUsage((invocation, invalidUsage, chain) ->
+                        invocation.sender().sendMessage(ChatColor.translateAlternateColorCodes('&', lang.getInvalidUsage())))
+                .build();
 
         if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().anyMatch(plugin -> plugin.getName().equals("ItemsAdder"))) {
             itemsAdder = true;
@@ -148,6 +151,8 @@ public final class InventoryDropChance extends JavaPlugin {
     }
 
     public void onDisable() {
-        CommandAPI.onDisable();
+        if (liteCommands != null) {
+            liteCommands.unregister();
+        }
     }
 }

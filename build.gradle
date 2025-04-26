@@ -41,6 +41,10 @@ repositories {
         name = "matteodev"
         url = "https://maven.devs.beer"
     }
+    maven {
+        name = "panda-lang"
+        url = "https://repo.panda-lang.org/releases"
+    }
 }
 
 dependencies {
@@ -56,14 +60,12 @@ dependencies {
     compileOnly "me.playgamesgo:plugin-annotations-continued:${project.pluginAnnotationsVersion}"
     annotationProcessor "me.playgamesgo:plugin-annotations-continued:${project.pluginAnnotationsVersion}"
 
-    implementation "dev.jorel:commandapi-bukkit-shade:${project.commandApiVersion}"
-    compileOnly "dev.jorel:commandapi-annotations:${project.commandApiVersion}"
-    annotationProcessor "dev.jorel:commandapi-annotations:${project.commandApiVersion}"
+    implementation "dev.rollczi:litecommands-bukkit:${project.liteCommandsVersion}"
 
     compileOnly "org.projectlombok:lombok:${project.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.lombokVersion}"
 
-    implementation "de.tr7zw:item-nbt-api:2.14.1"
+    implementation "de.tr7zw:item-nbt-api:2.15.0"
     compileOnly "dev.lone:api-itemsadder:4.0.2-beta-release-11"
 }
 
@@ -90,6 +92,10 @@ tasks.register('replaceVarsInJava', Copy) {
     filter { line -> line.replace('${version}', project.version.toString()) }
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add("-parameters")
+}
+
 compileJava {
     dependsOn replaceVarsInJava
     source = fileTree("$buildDir/tmp")
@@ -97,7 +103,6 @@ compileJava {
 
 shadowJar {
     relocate 'de.leonhard.storage', 'me.playgamesgo.libs.simplixstorage'
-    relocate 'dev.jorel.commandapi', 'me.playgamesgo.libs.commandapi'
     relocate 'de.tr7zw.changeme.nbtapi', 'me.playgamesgo.libs.nbtapi'
     minimize()
 }
@@ -105,6 +110,6 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.5")
     }
 }

@@ -2,54 +2,56 @@ package me.playgamesgo.inventorydropchance.commands;
 
 import java.util.List;
 
-import dev.jorel.commandapi.annotations.*;
-import dev.jorel.commandapi.annotations.arguments.ABooleanArgument;
-import dev.jorel.commandapi.annotations.arguments.AIntegerArgument;
+import dev.rollczi.litecommands.annotations.argument.Arg;
+import dev.rollczi.litecommands.annotations.command.Command;
+import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.execute.Execute;
+import dev.rollczi.litecommands.annotations.permission.Permission;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
+import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@Command("inventorydropchance")
-@Alias("idc")
+@Command(name = "inventorydropchance", aliases = "idc")
 @Permission("inventorydropchance.inventorydropchance")
 public class InventoryDropChanceCommand {
-    @Default
-    public static void inventoryDropChanceCommand(CommandSender sender) {
+    @Execute
+    public void inventoryDropChanceCommand(@Context CommandSender sender) {
         helpCommand(sender);
     }
 
-    @Subcommand("reload")
+    @Execute(name = "reload")
     @Permission("inventorydropchance.reload")
-    public static void reloadCommand(CommandSender sender) {
+    public void reloadCommand(@Context CommandSender sender) {
         InventoryDropChance.config.load(true);
         InventoryDropChance.lang.load(true);
         InventoryDropChance.globalConfig.load(true);
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.lang.getReloaded()));
     }
 
-    @Subcommand("help")
-    public static void helpCommand(CommandSender sender) {
+    @Execute(name = "help")
+    public void helpCommand(@Context CommandSender sender) {
         List<String> help = InventoryDropChance.lang.getHelp();
         for (String line : help)
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
     }
 
-    @Subcommand("makenodrop")
+    @Execute(name = "makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore, @AIntegerArgument int chance) {
+    public void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg ChanceArgument chance) {
         MakeNoDropCommand.makeNoDropCommand(player, lore, chance);
     }
 
-    @Subcommand("makenodrop")
+    @Execute(name = "makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore) {
+    public void makeNoDropCommand(@Context Player player, @Arg boolean lore) {
         MakeNoDropCommand.makeNoDropCommand(player, lore);
     }
 
-    @Subcommand("makenodrop")
+    @Execute(name = "makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public static void makeNoDropCommand(Player player) {
+    public void makeNoDropCommand(@Context Player player) {
         MakeNoDropCommand.makeNoDropCommand(player);
     }
 }

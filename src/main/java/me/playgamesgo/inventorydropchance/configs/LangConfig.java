@@ -14,8 +14,8 @@ public class LangConfig extends OkaeriConfig {
     private String noDropGiven = "&e[&6InventoryDropChance&e] &aNow this item is not droppable!";
     private String noItemInHand = "&e[&6InventoryDropChance&e] &cYou don't have any item in your hand!";
     private String reloaded = "&e[&6InventoryDropChance&e] &aConfig reloaded!";
+    private String invalidUsage = "&e[&6InventoryDropChance&e] &cInvalid usage! Use /idc help for help!";
     private String invalidArgument = "&e[&6InventoryDropChance&e] &cInvalid argument! Use /idc help for help!";
-    private String noArgument = "&e[&6InventoryDropChance&e] &cYou need to specify an argument! Use /idc help for help!";
     private String scrollGiven = "&e[&6InventoryDropChance&e] &aScroll given!";
 
     private List<String> help = List.of(

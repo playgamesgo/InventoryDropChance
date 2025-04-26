@@ -3,31 +3,33 @@ package me.playgamesgo.inventorydropchance.commands;
 import java.util.List;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import dev.jorel.commandapi.annotations.*;
-import dev.jorel.commandapi.annotations.arguments.ABooleanArgument;
-import dev.jorel.commandapi.annotations.arguments.AIntegerArgument;
+import dev.rollczi.litecommands.annotations.argument.Arg;
+import dev.rollczi.litecommands.annotations.command.Command;
+import dev.rollczi.litecommands.annotations.context.Context;
+import dev.rollczi.litecommands.annotations.execute.Execute;
+import dev.rollczi.litecommands.annotations.permission.Permission;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
+import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-@Command("makenodrop")
+@Command(name = "makenodrop", aliases = "mnd")
 @Permission("inventorydropchance.inventorydropchance")
-@Alias("mnd")
 public class MakeNoDropCommand {
-    @Default
-    public static void makeNoDropCommand(Player player) {
-        makeNoDropCommand(player, false, 100);
+    @Execute
+    public static void makeNoDropCommand(@Context Player player) {
+        makeNoDropCommand(player, false, new ChanceArgument(100));
     }
 
-    @Default
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore) {
-        makeNoDropCommand(player, lore, 100);
+    @Execute
+    public static void makeNoDropCommand(@Context Player player, @Arg boolean lore) {
+        makeNoDropCommand(player, lore, new ChanceArgument(100));
     }
 
-    @Default
-    public static void makeNoDropCommand(Player player, @ABooleanArgument boolean lore, @AIntegerArgument int chance) {
+    @Execute
+    public static void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg ChanceArgument chance) {
         if (!player.hasPermission("inventorydropchance.makenodrop")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.lang.getNoPermission()));
             return;
@@ -40,18 +42,18 @@ public class MakeNoDropCommand {
 
         NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
         nbtItem.setBoolean("MAY_NO_DROP", Boolean.TRUE);
-        nbtItem.setInteger("NO_DROP_CHANCE", chance);
+        nbtItem.setInteger("NO_DROP_CHANCE", chance.chance);
         ItemStack item = nbtItem.getItem();
 
         if (lore) {
             InventoryDropChance.lang.load(true);
-            List<String> loreList = chance == 100 ? InventoryDropChance.lang.getNoDropLore() : InventoryDropChance.lang.getNoDropChanceLore();
+            List<String> loreList = chance.chance == 100 ? InventoryDropChance.lang.getNoDropLore() : InventoryDropChance.lang.getNoDropChanceLore();
 
             if (InventoryDropChance.config.isInverseLoreChance()) {
-                chance = 100 - chance;
+                chance.chance = 100 - chance.chance;
             }
 
-            int finalChance = chance;
+            int finalChance = chance.chance;
             loreList.replaceAll(textToTranslate -> textToTranslate.replaceAll("%chance%", finalChance + ""));
             loreList.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
 
