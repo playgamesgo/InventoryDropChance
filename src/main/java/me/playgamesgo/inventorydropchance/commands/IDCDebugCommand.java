@@ -3,6 +3,7 @@ package me.playgamesgo.inventorydropchance.commands;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
+import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class IDCDebugCommand {
                 Collections.shuffle(materials);
                 ItemStack item = new ItemStack(materials.get(0));
                 player.getInventory().setItemInMainHand(item);
-                MakeNoDropCommand.makeNoDropCommand(player, true, 50);
+                MakeNoDropCommand.makeNoDropCommand(player, true, new ChanceArgument(50));
                 addItems.add(player.getInventory().getItemInMainHand());
                 player.getInventory().clear();
             }
@@ -49,7 +50,7 @@ public class IDCDebugCommand {
                 ItemStack item = new ItemStack(materials.get(0));
                 item.addUnsafeEnchantments(Map.of(Enchantment.VANISHING_CURSE, 1));
                 player.getInventory().setItemInMainHand(item);
-                MakeNoDropCommand.makeNoDropCommand(player, true, 50);
+                MakeNoDropCommand.makeNoDropCommand(player, true, new ChanceArgument(50));
                 addItems.add(player.getInventory().getItemInMainHand());
                 player.getInventory().clear();
             }
@@ -79,7 +80,7 @@ public class IDCDebugCommand {
             ItemStack item = new ItemStack(materials.get(0));
             item.addUnsafeEnchantments(Map.of(Enchantment.VANISHING_CURSE, 1));
             player.getInventory().setItemInMainHand(item);
-            MakeNoDropCommand.makeNoDropCommand(player, true, 50);
+            MakeNoDropCommand.makeNoDropCommand(player, true, new ChanceArgument(50));
             addItems.add(player.getInventory().getItemInMainHand());
             player.getInventory().clear();
         }

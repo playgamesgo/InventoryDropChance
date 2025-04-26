@@ -103,7 +103,6 @@ compileJava {
 
 shadowJar {
     relocate 'de.leonhard.storage', 'me.playgamesgo.libs.simplixstorage'
-    relocate 'dev.jorel.commandapi', 'me.playgamesgo.libs.commandapi'
     relocate 'de.tr7zw.changeme.nbtapi', 'me.playgamesgo.libs.nbtapi'
     minimize()
 }
@@ -111,6 +110,6 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.5")
     }
 }

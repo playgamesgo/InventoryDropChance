@@ -6,9 +6,9 @@ import dev.rollczi.litecommands.annotations.argument.Arg;
 import dev.rollczi.litecommands.annotations.command.Command;
 import dev.rollczi.litecommands.annotations.context.Context;
 import dev.rollczi.litecommands.annotations.execute.Execute;
-import dev.rollczi.litecommands.annotations.execute.ExecuteDefault;
 import dev.rollczi.litecommands.annotations.permission.Permission;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
+import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 @Command(name = "inventorydropchance", aliases = "idc")
 @Permission("inventorydropchance.inventorydropchance")
 public class InventoryDropChanceCommand {
-    @ExecuteDefault
+    @Execute
     public void inventoryDropChanceCommand(@Context CommandSender sender) {
         helpCommand(sender);
     }
@@ -39,7 +39,7 @@ public class InventoryDropChanceCommand {
 
     @Execute(name = "makenodrop")
     @Permission("inventorydropchance.makenodrop")
-    public void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg int chance) {
+    public void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg ChanceArgument chance) {
         MakeNoDropCommand.makeNoDropCommand(player, lore, chance);
     }
 
