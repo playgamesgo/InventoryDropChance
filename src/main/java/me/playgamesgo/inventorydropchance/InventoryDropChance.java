@@ -132,7 +132,7 @@ public final class InventoryDropChance extends JavaPlugin {
 
         liteCommands = LiteBukkitFactory.builder("inventorydropchance", this)
                 .commands(
-                        new IDCDebugCommand(),
+                        //new IDCDebugCommand(),
                         new InventoryDropChanceCommand(),
                         new MakeNoDropCommand(),
                         new ScrollsCommand()
