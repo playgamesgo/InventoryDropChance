@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.playgamesgo'
-version = '1.6.0-hotfix1'
+version = '1.6.1'
 
 repositories {
     mavenCentral()
@@ -69,7 +69,7 @@ dependencies {
     compileOnly "dev.lone:api-itemsadder:4.0.2-beta-release-11"
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

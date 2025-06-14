@@ -6,7 +6,6 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import eu.okaeri.configs.yaml.bukkit.serdes.SerdesBukkit;
-import me.playgamesgo.inventorydropchance.commands.IDCDebugCommand;
 import me.playgamesgo.inventorydropchance.commands.InventoryDropChanceCommand;
 import me.playgamesgo.inventorydropchance.commands.MakeNoDropCommand;
 import me.playgamesgo.inventorydropchance.commands.ScrollsCommand;
@@ -31,6 +30,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Plugin(name = "InventoryDropChance", version = "${version}")
 @ApiVersion(ApiVersion.Target.v1_16)
@@ -144,7 +144,7 @@ public final class InventoryDropChance extends JavaPlugin {
                         invocation.sender().sendMessage(ChatColor.translateAlternateColorCodes('&', lang.getInvalidUsage())))
                 .build();
 
-        if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().anyMatch(plugin -> plugin.getName().equals("ItemsAdder"))) {
+        if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).collect(Collectors.toList()).stream().anyMatch(plugin -> plugin.getName().equals("ItemsAdder"))) {
             itemsAdder = true;
             getLogger().info("ItemsAdder detected, support for custom items added");
         }

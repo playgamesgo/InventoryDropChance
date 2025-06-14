@@ -5,12 +5,13 @@ import eu.okaeri.configs.annotation.Comment;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
 @Setter
 public class Config extends OkaeriConfig {
-    private List<String> ignoredWorlds = List.of("exampleWorld", "exampleWorld2");
+    private List<String> ignoredWorlds = Arrays.asList("exampleWorld", "exampleWorld2");
 
     @Comment()
     @Comment("If true, a chance to save item will be ignored if item has Curse of Vanishing")

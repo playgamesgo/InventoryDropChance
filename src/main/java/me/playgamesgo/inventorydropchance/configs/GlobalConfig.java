@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -23,7 +21,7 @@ public class GlobalConfig extends OkaeriConfig {
 
     @Comment("Order of chance calculation, chance given by the command will have the highest priority and will work as FIRST_APPLY for that item")
     @Comment("If element is not present, it will be ignored, possible values: ITEMSADDDER, CUSTOMMODELDATA, MATERIAL, WORLD, DEFAULT")
-    private LinkedList<Order> chanceOrder = new LinkedList<>(List.of(
+    private LinkedList<Order> chanceOrder = new LinkedList<>(Arrays.asList(
             Order.ITEMSADDDER,
             Order.CUSTOMMODELDATA,
             Order.MATERIAL,
@@ -48,29 +46,29 @@ public class GlobalConfig extends OkaeriConfig {
 
     @Comment()
     @Comment("Default drop chance for all items per world, put {} to disable")
-    private Map<String, Integer> worldValues = Map.of(
-            "exampleWorld", 80,
-            "exampleWorld2", 20
-    );
+    private Map<String, Integer> worldValues = new HashMap<String, Integer>() {{
+        put("exampleWorld", 80);
+        put("exampleWorld2", 20);
+    }};
 
     @Comment()
     @Comment("Default drop chance for all items per material, put {} to disable")
-    private Map<Material, Integer> globalValues = Map.of(
-            Material.STICK, 50,
-            Material.STONE, 10
-    );
+    private Map<Material, Integer> globalValues = new HashMap<Material, Integer>() {{
+        put(Material.STICK, 50);
+        put(Material.STONE, 10);
+    }};
 
     @Comment()
     @Comment("Default drop chance for all items per custom model data, put {} to disable")
-    private Map<Integer, Integer> customModelDataValues = Map.of(
-            1, 40,
-            2, 10
-    );
+    private Map<Integer, Integer> customModelDataValues = new HashMap<Integer, Integer>() {{
+        put(1, 40);
+        put(2, 10);
+    }};
 
     @Comment()
     @Comment("Default drop chance for all items from ItemsAdder, requires ItemsAdder plugin, put {} to disable")
-    private Map<String, Integer> itemsAdderValues = Map.of(
-            "example_namespace:example_item", 75,
-            "example_namespace:example_item2", 25
-    );
+    private Map<String, Integer> itemsAdderValues = new HashMap<String, Integer>() {{
+        put("example_namespace:example_item", 75);
+        put("example_namespace:example_item2", 25);
+    }};
 }

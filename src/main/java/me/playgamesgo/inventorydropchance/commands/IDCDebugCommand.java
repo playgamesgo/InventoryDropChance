@@ -20,7 +20,7 @@ public class IDCDebugCommand {
             player.getInventory().clear();
             player.setOp(true);
             player.getInventory().setHeldItemSlot(0);
-            List<Material> materials = new ArrayList<>(Arrays.stream(Material.values()).toList());
+            List<Material> materials = Arrays.stream(Material.values()).collect(Collectors.toList());
             List<ItemStack> addItems = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
                 Collections.shuffle(materials);
@@ -43,12 +43,14 @@ public class IDCDebugCommand {
             player.getInventory().clear();
             player.setOp(true);
             player.getInventory().setHeldItemSlot(0);
-            List<Material> materials = new ArrayList<>(Arrays.stream(Material.values()).toList());
+            List<Material> materials = Arrays.stream(Material.values()).collect(Collectors.toList());
             List<ItemStack> addItems = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
                 Collections.shuffle(materials);
                 ItemStack item = new ItemStack(materials.get(0));
-                item.addUnsafeEnchantments(Map.of(Enchantment.VANISHING_CURSE, 1));
+                Map<Enchantment, Integer> enchantments = new HashMap<>();
+                enchantments.put(Enchantment.VANISHING_CURSE, 1);
+                item.addUnsafeEnchantments(enchantments);
                 player.getInventory().setItemInMainHand(item);
                 MakeNoDropCommand.makeNoDropCommand(player, true, new ChanceArgument(50));
                 addItems.add(player.getInventory().getItemInMainHand());
@@ -66,7 +68,7 @@ public class IDCDebugCommand {
         player.getInventory().clear();
         player.setOp(true);
         player.getInventory().setHeldItemSlot(0);
-        List<Material> materials = new ArrayList<>(Arrays.stream(Material.values()).toList());
+        List<Material> materials = Arrays.stream(Material.values()).collect(Collectors.toList());
         materials = materials.stream().filter(material -> {
             final String typeNameString = material.name();
             return typeNameString.endsWith("_HELMET")
@@ -78,7 +80,9 @@ public class IDCDebugCommand {
         for (int i = 0; i < 9; i++) {
             Collections.shuffle(materials);
             ItemStack item = new ItemStack(materials.get(0));
-            item.addUnsafeEnchantments(Map.of(Enchantment.VANISHING_CURSE, 1));
+            Map<Enchantment, Integer> enchantments = new HashMap<>();
+            enchantments.put(Enchantment.VANISHING_CURSE, 1);
+            item.addUnsafeEnchantments(enchantments);
             player.getInventory().setItemInMainHand(item);
             MakeNoDropCommand.makeNoDropCommand(player, true, new ChanceArgument(50));
             addItems.add(player.getInventory().getItemInMainHand());
