@@ -65,7 +65,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${project.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.lombokVersion}"
 
-    implementation "de.tr7zw:item-nbt-api:2.15.0"
+    implementation "de.tr7zw:item-nbt-api:2.15.1"
     compileOnly "dev.lone:api-itemsadder:4.0.2-beta-release-11"
 }
 
@@ -110,6 +110,6 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.8")
     }
 }
