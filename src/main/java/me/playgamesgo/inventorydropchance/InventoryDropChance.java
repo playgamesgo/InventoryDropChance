@@ -10,6 +10,7 @@ import me.playgamesgo.inventorydropchance.commands.InventoryDropChanceCommand;
 import me.playgamesgo.inventorydropchance.commands.MakeNoDropCommand;
 import me.playgamesgo.inventorydropchance.commands.ScrollsCommand;
 import me.playgamesgo.inventorydropchance.commands.arguments.ChanceArgument;
+import me.playgamesgo.inventorydropchance.listeners.InventoryClickListener;
 import me.playgamesgo.inventorydropchance.listeners.PlayerDeathListener;
 import me.playgamesgo.inventorydropchance.configs.Config;
 import me.playgamesgo.inventorydropchance.configs.LegacyConfig;
@@ -127,9 +128,6 @@ public final class InventoryDropChance extends JavaPlugin {
             getLogger().info("Config migrated successfully");
         }
 
-
-        pluginManager.registerEvents(new PlayerDeathListener(), this);
-
         liteCommands = LiteBukkitFactory.builder("inventorydropchance", this)
                 .commands(
                         //new IDCDebugCommand(),
@@ -148,6 +146,9 @@ public final class InventoryDropChance extends JavaPlugin {
             itemsAdder = true;
             getLogger().info("ItemsAdder detected, support for custom items added");
         }
+
+        pluginManager.registerEvents(new PlayerDeathListener(), this);
+        pluginManager.registerEvents(new InventoryClickListener(), this);
     }
 
     public void onDisable() {

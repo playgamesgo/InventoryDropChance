@@ -24,7 +24,7 @@ public class PlayerDeathListener implements Listener {
 
     public PlayerDeathListener() {
         if (InventoryDropChance.itemsAdder) {
-            orders.put(GlobalConfig.Order.ITEMSADDDER, (item, player) -> {
+            orders.put(GlobalConfig.Order.ITEMSADDER, (item, player) -> {
                 Random random = new Random();
 
                 CustomStack stack = CustomStack.byItemStack(item);

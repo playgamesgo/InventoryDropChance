@@ -12,7 +12,7 @@ import java.util.*;
 @Setter
 public class GlobalConfig extends OkaeriConfig {
     public enum Order {
-        ITEMSADDDER,
+        ITEMSADDER,
         CUSTOMMODELDATA,
         MATERIAL,
         WORLD,
@@ -20,9 +20,9 @@ public class GlobalConfig extends OkaeriConfig {
     }
 
     @Comment("Order of chance calculation, chance given by the command will have the highest priority and will work as FIRST_APPLY for that item")
-    @Comment("If element is not present, it will be ignored, possible values: ITEMSADDDER, CUSTOMMODELDATA, MATERIAL, WORLD, DEFAULT")
+    @Comment("If element is not present, it will be ignored, possible values: ITEMSADDER, CUSTOMMODELDATA, MATERIAL, WORLD, DEFAULT")
     private LinkedList<Order> chanceOrder = new LinkedList<>(Arrays.asList(
-            Order.ITEMSADDDER,
+            Order.ITEMSADDER,
             Order.CUSTOMMODELDATA,
             Order.MATERIAL,
             Order.WORLD,
