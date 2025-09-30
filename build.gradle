@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.playgamesgo'
-version = '1.6.3'
+version = '1.7.0'
 
 repositories {
     mavenCentral()
@@ -45,6 +45,10 @@ repositories {
         name = "panda-lang"
         url = "https://repo.panda-lang.org/releases"
     }
+    maven {
+        name = "enginehub"
+        url = "https://maven.enginehub.org/repo/"
+    }
 }
 
 dependencies {
@@ -65,8 +69,9 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${project.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.lombokVersion}"
 
-    implementation "de.tr7zw:item-nbt-api:2.15.1"
-    compileOnly "dev.lone:api-itemsadder:4.0.2-beta-release-11"
+    implementation "de.tr7zw:item-nbt-api:${project.nbtApiVersion}"
+    compileOnly "dev.lone:api-itemsadder:${project.itemsAdderVersion}"
+    compileOnly "com.sk89q.worldguard:worldguard-bukkit:${project.worldGuardVersion}"
 }
 
 def targetJavaVersion = 8

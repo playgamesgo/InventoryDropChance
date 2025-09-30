@@ -16,6 +16,7 @@ import me.playgamesgo.inventorydropchance.configs.Config;
 import me.playgamesgo.inventorydropchance.configs.LegacyConfig;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
 import me.playgamesgo.inventorydropchance.configs.LangConfig;
+import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import me.playgamesgo.plugin.annotation.dependency.SoftDependency;
 import me.playgamesgo.plugin.annotation.plugin.ApiVersion;
 import me.playgamesgo.plugin.annotation.plugin.Description;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 @Author("playgamesgo")
 @Description("Change the drop rate of items in the inventory on death")
 @SoftDependency("ItemsAdder")
+@SoftDependency("WorldGuard")
 public final class InventoryDropChance extends JavaPlugin {
     public static InventoryDropChance instance;
     public static LiteCommands<CommandSender> liteCommands;
@@ -46,6 +48,12 @@ public final class InventoryDropChance extends JavaPlugin {
     public static GlobalConfig globalConfig;
     public static boolean itemsAdder = false;
 
+    @Override
+    public void onLoad() {
+        WorldGuardManager.init();
+    }
+
+    @Override
     public void onEnable() {
         instance = this;
         PluginManager pluginManager = getServer().getPluginManager();

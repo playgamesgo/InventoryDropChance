@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
+import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,7 +24,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class PlayerDeathListener implements Listener {
+public final class PlayerDeathListener implements Listener {
     private static final Map<GlobalConfig.Order, Runnable> orders = new HashMap<>();
 
     public PlayerDeathListener() {
@@ -36,8 +41,18 @@ public class PlayerDeathListener implements Listener {
                 }
                 return null;
             });
-        } else
-            InventoryDropChance.instance.getLogger().warning("ItemsAdder is not installed, but ITEMSADDER order is presented, ignoring");
+        }
+
+        if (WorldGuardManager.isEnabled()) {
+            orders.put(GlobalConfig.Order.WORLDGUARD, (item, bukkitPlayer) -> {
+                LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
+                ApplicableRegionSet set = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+                Integer regionChance = set.queryValue(player, WorldGuardManager.getRegionDropChance());
+
+                if (regionChance == null || regionChance < 0) return null;
+                return new Random().nextInt(100) <= regionChance;
+            });
+        }
 
         orders.put(GlobalConfig.Order.CUSTOMMODELDATA, (item, player) -> {
             Random random = new Random();
@@ -83,9 +98,10 @@ public class PlayerDeathListener implements Listener {
         Player player = event.getEntity();
 
         for (String ignoredWorld : InventoryDropChance.config.getIgnoredWorlds()) {
-            if (player.getWorld() == Bukkit.getWorld(ignoredWorld))
-                return;
+            if (player.getWorld() == Bukkit.getWorld(ignoredWorld)) return;
         }
+
+        if (WorldGuardManager.isIDCDisabled(event.getEntity())) return;
 
         int max = 0;
         if (!InventoryDropChance.config.ignorePermissions) {
