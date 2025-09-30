@@ -12,6 +12,10 @@ Also, a scroll can be created using "/scrolls [addLore] [chance]" command, when 
 - /mnd [addLore] [chance] or /makenodrop [addLore] [chance] (Permission: inventorydropchance.makenodrop): Make items undroppable and set custom drop chances for items individually.
 - /scrolls [addLore] [chance] (Permission:inventorydropchance.scrolls): Make item a scroll with custom drop chances that can be applied to the item.
 
+**WorldGuard Flags:**
+- `idc-disabled` - Disables InventoryDropChance functionality in region
+- `idc-region-drop-chance` - Sets a custom drop chance for players in the region
+
 **Download from:**
 - [SpigotMC](https://www.spigotmc.org/resources/inventorydropchance.110836/)
 - [Modrinth](https://modrinth.com/plugin/inventorydropchance)
