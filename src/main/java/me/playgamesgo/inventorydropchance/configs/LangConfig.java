@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class LangConfig extends OkaeriConfig {
+public final class LangConfig extends OkaeriConfig {
     private String noPermission = "&e[&6InventoryDropChance&e] &cYou don't have permission to use this command!";
     private String noDropGiven = "&e[&6InventoryDropChance&e] &aNow this item is not droppable!";
     private String noItemInHand = "&e[&6InventoryDropChance&e] &cYou don't have any item in your hand!";
@@ -38,5 +38,19 @@ public class LangConfig extends OkaeriConfig {
     private List<String> scrollsLore = Arrays.asList(
             "&6This item is a scroll!",
             "It put a %chance% chance to not drop the item on death!"
+    );
+
+    @Comment()
+    private boolean showTitleOnDeath = false;
+    private String deathTitle = "&c&lYou Died!";
+    private String deathSubTitle = "&7You lost %amount%% of items! You saved %saved_amount%% items!";
+    private int fadeIn = 10;
+    private int stay = 70;
+    private int fadeOut = 20;
+
+    @Comment()
+    private boolean sendChatMessageOnDeath = false;
+    private List<String> deathMessage = Arrays.asList(
+            "&e[&6InventoryDropChance&e] &7You lost &c%amount%% &7of items! You saved &a%saved_amount%% &7items!"
     );
 }

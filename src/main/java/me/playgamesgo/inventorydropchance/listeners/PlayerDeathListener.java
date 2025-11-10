@@ -3,6 +3,7 @@ package me.playgamesgo.inventorydropchance.listeners;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
 
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
@@ -14,8 +15,10 @@ import dev.lone.itemsadder.api.CustomStack;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
 import me.playgamesgo.inventorydropchance.utils.AxGravesIntegration;
+import me.playgamesgo.inventorydropchance.utils.ItemUtils;
 import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public final class PlayerDeathListener implements Listener {
-    private static final Map<GlobalConfig.Order, Runnable> orders = new HashMap<>();
+    private static final Map<GlobalConfig.Order, BiFunction<ItemStack, Player, Boolean>> orders = new HashMap<>();
+    private static final Map<Player, Float> pendingSavedAmounts = new HashMap<>();
 
     public PlayerDeathListener() {
         if (InventoryDropChance.itemsAdder) {
@@ -118,13 +122,17 @@ public final class PlayerDeathListener implements Listener {
         event.getDrops().clear();
         PlayerInventory playerInventory = player.getInventory();
         ItemStack[] items = playerInventory.getContents();
+        ItemStack[] originalItems = new ItemStack[items.length];
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) originalItems[i] = items[i].clone();
+        }
 
         for (ItemStack item : items) {
             if (item == null) continue;
 
             if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE) &&
                     InventoryDropChance.config.isSkipCurseOfVanishingItems()) {
-                removeCurseOfVanishingItem(playerInventory, item);
+                ItemUtils.removeCurseOfVanishingItem(playerInventory, item);
                 continue;
             }
 
@@ -140,24 +148,24 @@ public final class PlayerDeathListener implements Listener {
                     if (!InventoryDropChance.config.isApplyChanceToItemStack()) {
                         for (int i = 0; i < item.getAmount(); i++) {
                             if (n > chance) {
-                                removeItemAmount(player, playerInventory, item);
+                                ItemUtils.removeItemAmount(player, playerInventory, item);
                             }
                         }
                     } else {
                         if (n > chance) {
-                            removeItem(player, playerInventory, item);
+                            ItemUtils.removeItem(player, playerInventory, item);
                         }
                     }
                 } else {
                     if (!InventoryDropChance.config.isApplyChanceToItemStack()) {
                         for (int i = 0; i < item.getAmount(); i++) {
                             if (!trySave(item, player)) {
-                                removeItemAmount(player, playerInventory, item);
+                                ItemUtils.removeItemAmount(player, playerInventory, item);
                             }
                         }
                     } else {
                         if (!trySave(item, player)) {
-                            removeItem(player, playerInventory, item);
+                            ItemUtils.removeItem(player, playerInventory, item);
                         }
                     }
                 }
@@ -165,19 +173,55 @@ public final class PlayerDeathListener implements Listener {
         }
 
         AxGravesIntegration.summonGrave(player, event);
+        pendingSavedAmounts.put(player, ItemUtils.calculateDifference(originalItems, items));
     }
 
     @EventHandler
     public static void onPlayerRespawn(PlayerRespawnEvent event) {
-        NBT.modify(event.getPlayer(), readWriteNBT -> {
+        Player player = event.getPlayer();
+
+        NBT.modify(player, readWriteNBT -> {
             readWriteNBT.setInteger("Score", 0);
         });
+
+        if (InventoryDropChance.lang.isShowTitleOnDeath()) {
+            if (pendingSavedAmounts.containsKey(player)) {
+                float savedAmount = pendingSavedAmounts.get(player);
+                int savedAmound = Math.abs(Math.round(savedAmount * 100) - 100);
+
+                String title = InventoryDropChance.lang.getDeathTitle()
+                        .replace("%amount%", Math.round(savedAmount * 100) + "")
+                        .replace("%saved_amount%", savedAmound + "");
+                String subtitle = InventoryDropChance.lang.getDeathSubTitle()
+                        .replace("%amount%", Math.round(savedAmount * 100) + "")
+                        .replace("%saved_amount%", savedAmound + "");
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&', title),
+                        ChatColor.translateAlternateColorCodes('&', subtitle),
+                        InventoryDropChance.lang.getFadeIn(), InventoryDropChance.lang.getStay(), InventoryDropChance.lang.getFadeOut());
+            }
+        }
+
+        if (InventoryDropChance.lang.isSendChatMessageOnDeath()) {
+            if (pendingSavedAmounts.containsKey(player)) {
+                float savedAmount = pendingSavedAmounts.get(player);
+                int savedAmound = Math.abs(Math.round(savedAmount * 100) - 100);
+
+                for (String line : InventoryDropChance.lang.getDeathMessage()) {
+                    String message = line
+                            .replace("%amount%", Math.round(savedAmount* 100) + "")
+                            .replace("%saved_amount%", savedAmound + "");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                }
+            }
+        }
+
+        pendingSavedAmounts.remove(player);
     }
 
     private boolean trySave(ItemStack item, Player player) {
         for (GlobalConfig.Order order : InventoryDropChance.globalConfig.getChanceOrder()) {
             if (!orders.containsKey(order)) continue;
-            Boolean result = orders.get(order).run(item, player);
+            Boolean result = orders.get(order).apply(item, player);
             if (InventoryDropChance.globalConfig.getOrderType() == GlobalConfig.OrderType.FIRST_SUCCESS) {
                 if (result != null && result) return true;
             } else if (InventoryDropChance.globalConfig.getOrderType() == GlobalConfig.OrderType.FIRST_APPLY) {
@@ -185,95 +229,5 @@ public final class PlayerDeathListener implements Listener {
             }
         }
         return false;
-    }
-
-    private void removeItem(Player player, PlayerInventory playerInventory, ItemStack item) {
-        if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-            removeCurseOfVanishingItem(playerInventory, item);
-            return;
-        }
-
-        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, item.clone());
-        else player.getWorld().dropItemNaturally(player.getLocation(), item);
-        item.setAmount(0);
-    }
-
-    private void removeItemAmount(Player player, PlayerInventory playerInventory, ItemStack item) {
-        if (item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE)) {
-            if (playerInventory.getItemInOffHand().equals(item)) {
-                if (item.getAmount() <= 1) item = null;
-                else item.setAmount(item.getAmount() - 1);
-
-                playerInventory.setItemInOffHand(item);
-                return;
-            }
-            if (playerInventory.getHelmet() != null && playerInventory.getHelmet().equals(item)) {
-                if (item.getAmount() <= 1) item = null;
-                else item.setAmount(item.getAmount() - 1);
-
-                playerInventory.setHelmet(item);
-                return;
-            }
-            if (playerInventory.getChestplate() != null && playerInventory.getChestplate().equals(item)) {
-                if (item.getAmount() <= 1) item = null;
-                else item.setAmount(item.getAmount() - 1);
-
-                playerInventory.setChestplate(item);
-                return;
-            }
-            if (playerInventory.getLeggings() != null && playerInventory.getLeggings().equals(item)) {
-                if (item.getAmount() <= 1) item = null;
-                else item.setAmount(item.getAmount() - 1);
-
-                playerInventory.setLeggings(item);
-                return;
-            }
-            if (playerInventory.getBoots() != null && playerInventory.getBoots().equals(item)) {
-                if (item.getAmount() <= 1) item = null;
-                else item.setAmount(item.getAmount() - 1);
-
-                playerInventory.setBoots(item);
-                return;
-            }
-
-            if (item.getAmount() == 1) playerInventory.remove(item);
-            else item.setAmount(item.getAmount() - 1);
-            return;
-        }
-        ItemStack singleItem = item.clone();
-        singleItem.setAmount(1);
-
-        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, singleItem.clone());
-        else player.getWorld().dropItemNaturally(player.getLocation(), singleItem);
-        item.setAmount(item.getAmount() - 1);
-    }
-
-    private void removeCurseOfVanishingItem(PlayerInventory playerInventory, ItemStack item) {
-        if (playerInventory.getItemInOffHand().equals(item)) {
-            playerInventory.setItemInOffHand(null);
-            return;
-        }
-        if (playerInventory.getHelmet() != null && playerInventory.getHelmet().equals(item)) {
-            playerInventory.setHelmet(null);
-            return;
-        }
-        if (playerInventory.getChestplate() != null && playerInventory.getChestplate().equals(item)) {
-            playerInventory.setChestplate(null);
-            return;
-        }
-        if (playerInventory.getLeggings() != null && playerInventory.getLeggings().equals(item)) {
-            playerInventory.setLeggings(null);
-            return;
-        }
-        if (playerInventory.getBoots() != null && playerInventory.getBoots().equals(item)) {
-            playerInventory.setBoots(null);
-            return;
-        }
-        playerInventory.remove(item);
-    }
-
-    @FunctionalInterface
-    private interface Runnable {
-        Boolean run(ItemStack itemStack, Player player);
     }
 }
