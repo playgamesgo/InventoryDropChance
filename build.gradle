@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.playgamesgo'
-version = '1.7.0'
+version = '1.8.0'
 
 repositories {
     mavenCentral()
@@ -49,6 +49,10 @@ repositories {
         name = "enginehub"
         url = "https://maven.enginehub.org/repo/"
     }
+    maven {
+        name = "artillex-repo"
+        url = 'https://repo.artillex-studios.com/releases/'
+    }
 }
 
 dependencies {
@@ -72,6 +76,7 @@ dependencies {
     implementation "de.tr7zw:item-nbt-api:${project.nbtApiVersion}"
     compileOnly "dev.lone:api-itemsadder:${project.itemsAdderVersion}"
     compileOnly "com.sk89q.worldguard:worldguard-bukkit:${project.worldGuardVersion}"
+    compileOnly("com.artillexstudios:AxGraves:${project.axGravesVersion}") { transitive = false }
 }
 
 def targetJavaVersion = 8
@@ -115,6 +120,6 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.9")
+        minecraftVersion("1.21.10")
     }
 }

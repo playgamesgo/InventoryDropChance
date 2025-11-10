@@ -16,6 +16,7 @@ import me.playgamesgo.inventorydropchance.configs.Config;
 import me.playgamesgo.inventorydropchance.configs.LegacyConfig;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
 import me.playgamesgo.inventorydropchance.configs.LangConfig;
+import me.playgamesgo.inventorydropchance.utils.AxGravesIntegration;
 import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import me.playgamesgo.plugin.annotation.dependency.SoftDependency;
 import me.playgamesgo.plugin.annotation.plugin.ApiVersion;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 @Description("Change the drop rate of items in the inventory on death")
 @SoftDependency("ItemsAdder")
 @SoftDependency("WorldGuard")
+@SoftDependency("AxGraves")
 public final class InventoryDropChance extends JavaPlugin {
     public static InventoryDropChance instance;
     public static LiteCommands<CommandSender> liteCommands;
@@ -157,6 +159,8 @@ public final class InventoryDropChance extends JavaPlugin {
 
         pluginManager.registerEvents(new PlayerDeathListener(), this);
         pluginManager.registerEvents(new InventoryClickListener(), this);
+
+        AxGravesIntegration.init();
     }
 
     public void onDisable() {

@@ -13,6 +13,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import me.playgamesgo.inventorydropchance.configs.GlobalConfig;
+import me.playgamesgo.inventorydropchance.utils.AxGravesIntegration;
 import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -162,6 +163,8 @@ public final class PlayerDeathListener implements Listener {
                 }
             }
         }
+
+        AxGravesIntegration.summonGrave(player, event);
     }
 
     @EventHandler
@@ -189,7 +192,9 @@ public final class PlayerDeathListener implements Listener {
             removeCurseOfVanishingItem(playerInventory, item);
             return;
         }
-        player.getWorld().dropItemNaturally(player.getLocation(), item);
+
+        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, item.clone());
+        else player.getWorld().dropItemNaturally(player.getLocation(), item);
         item.setAmount(0);
     }
 
@@ -238,7 +243,8 @@ public final class PlayerDeathListener implements Listener {
         ItemStack singleItem = item.clone();
         singleItem.setAmount(1);
 
-        player.getWorld().dropItemNaturally(player.getLocation(), singleItem);
+        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, singleItem.clone());
+        else player.getWorld().dropItemNaturally(player.getLocation(), singleItem);
         item.setAmount(item.getAmount() - 1);
     }
 

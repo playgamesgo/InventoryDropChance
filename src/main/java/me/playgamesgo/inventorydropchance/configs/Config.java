@@ -29,4 +29,7 @@ public class Config extends OkaeriConfig {
     public boolean enableScrolls = true;
 
     public boolean ignorePermissions = false;
+
+    @Comment()
+    private boolean enableAxGravesIntegration = false;
 }
