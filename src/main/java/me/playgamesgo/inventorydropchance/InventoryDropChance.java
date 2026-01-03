@@ -49,6 +49,7 @@ public final class InventoryDropChance extends JavaPlugin {
     public static LangConfig lang;
     public static GlobalConfig globalConfig;
     public static boolean itemsAdder = false;
+    public static boolean axgraves = false;
 
     @Override
     public void onLoad() {
@@ -160,7 +161,14 @@ public final class InventoryDropChance extends JavaPlugin {
         pluginManager.registerEvents(new PlayerDeathListener(), this);
         pluginManager.registerEvents(new InventoryClickListener(), this);
 
-        AxGravesIntegration.init();
+        if (InventoryDropChance.config.isEnableAxGravesIntegration()) {
+            if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).collect(Collectors.toList()).stream().anyMatch(plugin -> plugin.getName().equals("AxGraves"))) {
+                axgraves = true;
+                InventoryDropChance.instance.getServer().getPluginManager().registerEvents(new AxGravesIntegration(), InventoryDropChance.instance);
+            } else {
+                InventoryDropChance.instance.getLogger().warning("AxGraves integration is enabled in the config, but AxGraves plugin is not installed!");
+            }
+        }
     }
 
     public void onDisable() {

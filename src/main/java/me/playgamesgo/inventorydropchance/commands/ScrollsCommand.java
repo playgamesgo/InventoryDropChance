@@ -19,17 +19,17 @@ import java.util.List;
 @Permission("inventorydropchance.scrolls")
 public class ScrollsCommand {
     @Execute
-    public void makeNoDropCommand(@Context Player player) {
-        makeNoDropCommand(player, false, new ChanceArgument(100));
+    public void scrollCommand(@Context Player player) {
+        scrollCommand(player, false, new ChanceArgument(100));
     }
 
     @Execute
-    public void makeNoDropCommand(@Context Player player, @Arg boolean lore) {
-        makeNoDropCommand(player, lore, new ChanceArgument(100));
+    public void scrollCommand(@Context Player player, @Arg boolean lore) {
+        scrollCommand(player, lore, new ChanceArgument(100));
     }
 
     @Execute
-    public void makeNoDropCommand(@Context Player player, @Arg boolean lore, @Arg ChanceArgument chance) {
+    public void scrollCommand(@Context Player player, @Arg boolean lore, @Arg ChanceArgument chance) {
         if (!player.hasPermission("inventorydropchance.scrolls")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', InventoryDropChance.lang.getNoPermission()));
             return;

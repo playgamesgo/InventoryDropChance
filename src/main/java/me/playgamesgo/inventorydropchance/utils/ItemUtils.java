@@ -1,5 +1,6 @@
 package me.playgamesgo.inventorydropchance.utils;
 
+import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ public final class ItemUtils {
             return;
         }
 
-        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, item.clone());
+        if (InventoryDropChance.axgraves) AxGravesIntegration.addGraveItems(player, item.clone());
         else player.getWorld().dropItemNaturally(player.getLocation(), item);
         item.setAmount(0);
     }
@@ -62,7 +63,7 @@ public final class ItemUtils {
         ItemStack singleItem = item.clone();
         singleItem.setAmount(1);
 
-        if (AxGravesIntegration.enabled) AxGravesIntegration.addGraveItems(player, singleItem.clone());
+        if (InventoryDropChance.axgraves) AxGravesIntegration.addGraveItems(player, singleItem.clone());
         else player.getWorld().dropItemNaturally(player.getLocation(), singleItem);
         item.setAmount(item.getAmount() - 1);
     }

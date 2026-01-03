@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Config extends OkaeriConfig {
+public final class Config extends OkaeriConfig {
     private List<String> ignoredWorlds = Arrays.asList("exampleWorld", "exampleWorld2");
 
     @Comment()
@@ -30,6 +30,6 @@ public class Config extends OkaeriConfig {
 
     public boolean ignorePermissions = false;
 
-    @Comment()
+    @Comment
     private boolean enableAxGravesIntegration = false;
 }

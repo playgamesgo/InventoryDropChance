@@ -172,7 +172,7 @@ public final class PlayerDeathListener implements Listener {
             }
         }
 
-        AxGravesIntegration.summonGrave(player, event);
+        if (InventoryDropChance.axgraves) AxGravesIntegration.summonGrave(player, event);
         pendingSavedAmounts.put(player, ItemUtils.calculateDifference(originalItems, items));
     }
 

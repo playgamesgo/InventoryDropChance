@@ -11,6 +11,7 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import lombok.Getter;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public final class WorldGuardManager {
@@ -37,7 +38,7 @@ public final class WorldGuardManager {
         }
     }
 
-    public static boolean isIDCDisabled(org.bukkit.entity.Player bukkitPlayer) {
+    public static boolean isIDCDisabled(Player bukkitPlayer) {
         if (!enabled) return false;
 
         LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);

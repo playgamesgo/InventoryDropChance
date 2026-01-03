@@ -19,32 +19,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class AxGravesIntegration implements Listener {
-    public static boolean enabled = false;
     public static HashMap<Player, List<ItemStack>> graveItems = new HashMap<>();
 
-    public static void init() {
-        if (InventoryDropChance.config.isEnableAxGravesIntegration()) {
-            if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).collect(Collectors.toList()).stream().anyMatch(plugin -> plugin.getName().equals("AxGraves"))) {
-                enabled = true;
-                InventoryDropChance.instance.getServer().getPluginManager().registerEvents(new AxGravesIntegration(), InventoryDropChance.instance);
-            } else {
-                InventoryDropChance.instance.getLogger().warning("AxGraves integration is enabled in the config, but AxGraves plugin is not installed!");
-            }
-        }
-    }
-
     public static void addGraveItems(Player player, ItemStack... items) {
-        if (!enabled) return;
         List<ItemStack> playerItems = graveItems.getOrDefault(player, new ArrayList<>());
         playerItems.addAll(Arrays.asList(items));
         graveItems.put(player, playerItems);
     }
 
     public static void summonGrave(Player player, PlayerDeathEvent event) {
-        if (!enabled) return;
         List<ItemStack> playerItems = graveItems.getOrDefault(player, new ArrayList<>());
         if (playerItems.isEmpty()) return;
 
@@ -68,6 +53,6 @@ public final class AxGravesIntegration implements Listener {
 
     @EventHandler
     public void onPreGraveSpawn(GravePreSpawnEvent event) {
-        if (enabled) event.setCancelled(true);
+        if (InventoryDropChance.axgraves) event.setCancelled(true);
     }
 }
