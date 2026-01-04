@@ -48,12 +48,17 @@ public final class InventoryDropChance extends JavaPlugin {
     public static Config config;
     public static LangConfig lang;
     public static GlobalConfig globalConfig;
+    public static boolean worldGuard = false;
     public static boolean itemsAdder = false;
     public static boolean axgraves = false;
 
     @Override
     public void onLoad() {
-        WorldGuardManager.init();
+        org.bukkit.plugin.Plugin worldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard");
+        if (worldGuard != null) {
+            InventoryDropChance.worldGuard = true;
+            WorldGuardManager.init();
+        }
     }
 
     @Override

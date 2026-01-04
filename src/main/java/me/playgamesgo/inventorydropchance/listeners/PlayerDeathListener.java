@@ -5,10 +5,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import dev.lone.itemsadder.api.CustomStack;
@@ -48,15 +44,8 @@ public final class PlayerDeathListener implements Listener {
             });
         }
 
-        if (WorldGuardManager.isEnabled()) {
-            orders.put(GlobalConfig.Order.WORLDGUARD, (item, bukkitPlayer) -> {
-                LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
-                ApplicableRegionSet set = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
-                Integer regionChance = set.queryValue(player, WorldGuardManager.getRegionDropChance());
-
-                if (regionChance == null || regionChance < 0) return null;
-                return new Random().nextInt(100) <= regionChance;
-            });
+        if (InventoryDropChance.worldGuard) {
+            orders.put(GlobalConfig.Order.WORLDGUARD, WorldGuardManager::rollRegionDropChance);
         }
 
         orders.put(GlobalConfig.Order.CUSTOMMODELDATA, (item, player) -> {
@@ -106,7 +95,7 @@ public final class PlayerDeathListener implements Listener {
             if (player.getWorld() == Bukkit.getWorld(ignoredWorld)) return;
         }
 
-        if (WorldGuardManager.isIDCDisabled(event.getEntity())) return;
+        if (InventoryDropChance.worldGuard && WorldGuardManager.isIDCDisabled(event.getEntity())) return;
 
         int max = 0;
         if (!InventoryDropChance.config.ignorePermissions) {
