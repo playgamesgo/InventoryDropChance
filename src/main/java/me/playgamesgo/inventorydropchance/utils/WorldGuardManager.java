@@ -10,10 +10,9 @@ import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import lombok.Getter;
 import me.playgamesgo.inventorydropchance.InventoryDropChance;
+import me.playgamesgo.inventorydropchance.listeners.PlayerDeathListener;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Random;
 
 public final class WorldGuardManager {
     @Getter private static BooleanFlag IDCDisabled;
@@ -48,6 +47,6 @@ public final class WorldGuardManager {
         Integer regionChance = set.queryValue(player, WorldGuardManager.getRegionDropChance());
 
         if (regionChance == null || regionChance < 0) return null;
-        return new Random().nextInt(100) <= regionChance;
+        return PlayerDeathListener.random.nextInt(100) < regionChance;
     }
 }

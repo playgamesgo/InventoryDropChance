@@ -25,19 +25,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public final class PlayerDeathListener implements Listener {
+    public static final Random random = new Random();
     private static final Map<GlobalConfig.Order, BiFunction<ItemStack, Player, Boolean>> orders = new HashMap<>();
     private static final Map<Player, Float> pendingSavedAmounts = new HashMap<>();
 
     public PlayerDeathListener() {
         if (InventoryDropChance.itemsAdder) {
             orders.put(GlobalConfig.Order.ITEMSADDER, (item, player) -> {
-                Random random = new Random();
-
                 CustomStack stack = CustomStack.byItemStack(item);
                 if (stack != null) {
                     if (InventoryDropChance.globalConfig.getItemsAdderValues().containsKey(stack.getNamespacedID())) {
                         int chance = InventoryDropChance.globalConfig.getItemsAdderValues().get(stack.getNamespacedID());
-                        return random.nextInt(100) <= chance;
+                        return random.nextInt(100) < chance;
                     }
                 }
                 return null;
@@ -49,42 +48,37 @@ public final class PlayerDeathListener implements Listener {
         }
 
         orders.put(GlobalConfig.Order.CUSTOMMODELDATA, (item, player) -> {
-            Random random = new Random();
-
             if (item.getItemMeta().hasCustomModelData() &&
                     InventoryDropChance.globalConfig.getCustomModelDataValues().containsKey(item.getItemMeta().getCustomModelData())) {
                 int chance = InventoryDropChance.globalConfig.getCustomModelDataValues().get(item.getItemMeta().getCustomModelData());
-                return random.nextInt(100) <= chance;
+                return random.nextInt(100) < chance;
             } else {
                 return null;
             }
         });
 
         orders.put(GlobalConfig.Order.MATERIAL, (item, player) -> {
-            Random random = new Random();
-
             if (InventoryDropChance.globalConfig.getGlobalValues().containsKey(item.getType())) {
                 int chance = InventoryDropChance.globalConfig.getGlobalValues().get(item.getType());
-                return random.nextInt(100) <= chance;
+                return random.nextInt(100) < chance;
             } else {
                 return null;
             }
         });
 
         orders.put(GlobalConfig.Order.WORLD, (item, player) -> {
-            Random random = new Random();
             String world = player.getWorld().getName();
 
             if (InventoryDropChance.globalConfig.getWorldValues().containsKey(world)) {
                 int chance = InventoryDropChance.globalConfig.getWorldValues().get(world);
-                return random.nextInt(100) <= chance;
+                return random.nextInt(100) < chance;
             } else {
                 return null;
             }
         });
 
         orders.put(GlobalConfig.Order.DEFAULT, (item, player) ->
-                new Random().nextInt(100) <= InventoryDropChance.globalConfig.getDefaultDropChance());
+                random.nextInt(100) < InventoryDropChance.globalConfig.getDefaultDropChance());
     }
 
     @EventHandler
@@ -97,11 +91,11 @@ public final class PlayerDeathListener implements Listener {
 
         if (InventoryDropChance.worldGuard && WorldGuardManager.isIDCDisabled(event.getEntity())) return;
 
-        int max = 0;
+        int permissionChance = 0;
         if (!InventoryDropChance.config.ignorePermissions) {
             for (int x = 100; x > 0; x--) {
                 if (player.hasPermission("inventorydropchance." + x)) {
-                    max = x;
+                    permissionChance = x;
                     break;
                 }
             }
@@ -125,38 +119,29 @@ public final class PlayerDeathListener implements Listener {
                 continue;
             }
 
-            Random rand = new Random();
-            int n = rand.nextInt(100);
-            if (n > max) {
+            if (random.nextInt(100) < permissionChance) continue;
 
-                NBTItem nbtItem = new NBTItem(item);
-                if (nbtItem.getBoolean("NO_DROP")) continue; // Legacy support (I think, I don't remember)
+            NBTItem nbtItem = new NBTItem(item);
+            if (nbtItem.getBoolean("NO_DROP")) continue; // Legacy support (I think, I don't remember)
 
-                if (nbtItem.getBoolean("MAY_NO_DROP")) {
-                    int chance = nbtItem.getInteger("NO_DROP_CHANCE");
-                    if (!InventoryDropChance.config.isApplyChanceToItemStack()) {
-                        for (int i = 0; i < item.getAmount(); i++) {
-                            if (n > chance) {
-                                ItemUtils.removeItemAmount(player, playerInventory, item);
-                            }
-                        }
-                    } else {
-                        if (n > chance) {
-                            ItemUtils.removeItem(player, playerInventory, item);
-                        }
-                    }
+            if (nbtItem.getBoolean("MAY_NO_DROP")) {
+                int chance = nbtItem.getInteger("NO_DROP_CHANCE");
+                if (InventoryDropChance.config.isApplyChanceToItemStack()) {
+                    if (random.nextInt(100) < chance) ItemUtils.removeItem(player, playerInventory, item);
                 } else {
-                    if (!InventoryDropChance.config.isApplyChanceToItemStack()) {
-                        for (int i = 0; i < item.getAmount(); i++) {
-                            if (!trySave(item, player)) {
-                                ItemUtils.removeItemAmount(player, playerInventory, item);
-                            }
-                        }
-                    } else {
-                        if (!trySave(item, player)) {
-                            ItemUtils.removeItem(player, playerInventory, item);
-                        }
+                    for (int i = 0; i < item.getAmount(); i++) {
+                        if (random.nextInt(100) < chance) ItemUtils.removeItemAmount(player, playerInventory, item);
                     }
+                }
+
+                continue;
+            }
+
+            if (InventoryDropChance.config.isApplyChanceToItemStack()) {
+                if (!trySave(item, player)) ItemUtils.removeItem(player, playerInventory, item);
+            } else {
+                for (int i = 0; i < item.getAmount(); i++) {
+                    if (!trySave(item, player)) ItemUtils.removeItemAmount(player, playerInventory, item);
                 }
             }
         }
@@ -197,7 +182,7 @@ public final class PlayerDeathListener implements Listener {
 
                 for (String line : InventoryDropChance.lang.getDeathMessage()) {
                     String message = line
-                            .replace("%amount%", Math.round(savedAmount* 100) + "")
+                            .replace("%amount%", Math.round(savedAmount * 100) + "")
                             .replace("%saved_amount%", savedAmound + "");
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                 }
