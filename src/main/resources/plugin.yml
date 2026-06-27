@@ -1,0 +1,10 @@
+main: me.playgamesgo.inventorydropchance.InventoryDropChance
+name: InventoryDropChance
+version: 1.9.0
+description: Change the drop rate of items in the inventory on death
+author: playgamesgo
+softdepend:
+  - ItemsAdder
+  - WorldGuard
+  - AxGraves
+api-version: '1.18'

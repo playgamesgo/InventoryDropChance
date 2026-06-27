@@ -11,8 +11,7 @@ import org.bukkit.inventory.ItemStack;
 public class InventoryClickListener implements Listener {
     @EventHandler
     public static void inventoryClickListener(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player) {
-            Player player = (Player) event.getWhoClicked();
+        if (event.getWhoClicked() instanceof Player player) {
             if (event.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                 ItemStack cursor = event.getCursor();
                 NBTItem nbtItem = new NBTItem(cursor);

@@ -48,28 +48,28 @@ public final class GlobalConfig extends OkaeriConfig {
 
     @Comment()
     @Comment("Default drop chance for all items per world, put {} to disable")
-    private Map<String, Integer> worldValues = new HashMap<String, Integer>() {{
+    private Map<String, Integer> worldValues = new HashMap<>() {{
         put("exampleWorld", 80);
         put("exampleWorld2", 20);
     }};
 
     @Comment()
     @Comment("Default drop chance for all items per material, put {} to disable")
-    private Map<Material, Integer> globalValues = new HashMap<Material, Integer>() {{
+    private Map<Material, Integer> globalValues = new HashMap<>() {{
         put(Material.STICK, 50);
         put(Material.STONE, 10);
     }};
 
     @Comment()
     @Comment("Default drop chance for all items per custom model data, put {} to disable")
-    private Map<Integer, Integer> customModelDataValues = new HashMap<Integer, Integer>() {{
+    private Map<Integer, Integer> customModelDataValues = new HashMap<>() {{
         put(1, 40);
         put(2, 10);
     }};
 
     @Comment()
     @Comment("Default drop chance for all items from ItemsAdder, requires ItemsAdder plugin, put {} to disable")
-    private Map<String, Integer> itemsAdderValues = new HashMap<String, Integer>() {{
+    private Map<String, Integer> itemsAdderValues = new HashMap<>() {{
         put("example_namespace:example_item", 75);
         put("example_namespace:example_item2", 25);
     }};

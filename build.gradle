@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '8.3.0'
+    id 'com.gradleup.shadow' version '9.4.3'
     id 'xyz.jpenilla.run-paper' version '2.3.1'
 }
 
 group = 'me.playgamesgo'
-version = '1.8.4'
+version = '1.9.0'
 
 repositories {
     mavenCentral()
@@ -52,17 +52,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
-
-    implementation "com.github.simplix-softworks:simplixstorage:3.2.7"
+    compileOnly "io.papermc.paper:paper-api:1.18-R0.1-SNAPSHOT"
 
     implementation "eu.okaeri:okaeri-configs-hjson:${project.okaeriConfigsVersion}"
     implementation "eu.okaeri:okaeri-configs-yaml-bukkit:${project.okaeriConfigsVersion}"
     implementation "eu.okaeri:okaeri-configs-serdes-commons:${project.okaeriConfigsVersion}"
     implementation "eu.okaeri:okaeri-configs-serdes-bukkit:${project.okaeriConfigsVersion}"
-
-    compileOnly "com.github.playgamesgo:PluginAnnotationsContinued:${project.pluginAnnotationsVersion}"
-    annotationProcessor "com.github.playgamesgo:PluginAnnotationsContinued:${project.pluginAnnotationsVersion}"
 
     implementation "dev.rollczi:litecommands-bukkit:${project.liteCommandsVersion}"
 
@@ -70,12 +65,12 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${project.lombokVersion}"
 
     implementation "de.tr7zw:item-nbt-api:${project.nbtApiVersion}"
-    compileOnly "dev.lone:api-itemsadder:${project.itemsAdderVersion}"
+    compileOnly "beer.devs:itemsadder-api:${project.itemsAdderVersion}"
     compileOnly "com.sk89q.worldguard:worldguard-bukkit:${project.worldGuardVersion}"
     compileOnly("com.artillexstudios:AxGraves:${project.axGravesVersion}") { transitive = false }
 }
 
-def targetJavaVersion = 8
+def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -89,22 +84,7 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release.set(targetJavaVersion)
     }
-}
-
-tasks.register('replaceVarsInJava', Copy) {
-    from 'src/main/java'
-    into "$buildDir/tmp"
-
-    filter { line -> line.replace('${version}', project.version.toString()) }
-}
-
-tasks.withType(JavaCompile) {
     options.compilerArgs.add("-parameters")
-}
-
-compileJava {
-    dependsOn replaceVarsInJava
-    source = fileTree("$buildDir/tmp")
 }
 
 shadowJar {
@@ -116,6 +96,7 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.2")
+        serverJar(new File("run/paper-26.2-36.jar"))
     }
 }
