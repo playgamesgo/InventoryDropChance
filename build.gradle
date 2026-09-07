@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'com.gradleup.shadow' version '9.4.3'
-    id 'xyz.jpenilla.run-paper' version '2.3.1'
+    id 'xyz.jpenilla.run-paper' version '3.1.0'
 }
 
 group = 'me.playgamesgo'
@@ -20,10 +20,6 @@ repositories {
     maven {
         name = "jitpack"
         url "https://jitpack.io"
-    }
-    maven {
-        name = "artillex-repo"
-        url = 'https://repo.artillex-studios.com/releases/'
     }
     maven {
         name = "codemc"
@@ -49,6 +45,17 @@ repositories {
         name = "enginehub"
         url = "https://maven.enginehub.org/repo/"
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -67,7 +74,7 @@ dependencies {
     implementation "de.tr7zw:item-nbt-api:${project.nbtApiVersion}"
     compileOnly "beer.devs:itemsadder-api:${project.itemsAdderVersion}"
     compileOnly "com.sk89q.worldguard:worldguard-bukkit:${project.worldGuardVersion}"
-    compileOnly("com.artillexstudios:AxGraves:${project.axGravesVersion}") { transitive = false }
+    compileOnly("maven.modrinth:AxGraves:${project.axGravesVersion}") { transitive = false }
 }
 
 def targetJavaVersion = 17
@@ -88,7 +95,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 shadowJar {
-    relocate 'de.leonhard.storage', 'me.playgamesgo.libs.simplixstorage'
     relocate 'de.tr7zw.changeme.nbtapi', 'me.playgamesgo.libs.nbtapi'
     minimize()
 }
@@ -97,6 +103,6 @@ tasks {
     runServer {
         dependsOn("shadowJar")
         minecraftVersion("26.2")
-        serverJar(new File("run/paper-26.2-36.jar"))
+//        serverJar(new File("run/paper-26.2-36.jar"))
     }
 }

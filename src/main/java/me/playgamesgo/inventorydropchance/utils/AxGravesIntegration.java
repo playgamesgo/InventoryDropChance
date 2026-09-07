@@ -43,7 +43,7 @@ public final class AxGravesIntegration implements Listener {
         location.add(0, -0.5, 0);
 
         if (storeXp) event.setDroppedExp(0);
-        Grave grave = new Grave(location, player, playerItems, xp, System.currentTimeMillis());
+        Grave grave = new Grave(location, player, playerItems, xp, System.currentTimeMillis(), null);
         SpawnedGraves.addGrave(grave);
 
         final GraveSpawnEvent graveSpawnEvent = new GraveSpawnEvent(player, grave);
