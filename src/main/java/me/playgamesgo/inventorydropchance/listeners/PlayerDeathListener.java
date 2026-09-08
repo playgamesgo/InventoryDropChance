@@ -15,6 +15,7 @@ import me.playgamesgo.inventorydropchance.utils.ItemUtils;
 import me.playgamesgo.inventorydropchance.utils.WorldGuardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,6 +56,21 @@ public final class PlayerDeathListener implements Listener {
             } else {
                 return null;
             }
+        });
+
+        orders.put(GlobalConfig.Order.ENCHANTMENT, (itemStack, player) -> {
+            if (itemStack.getItemMeta().hasEnchants()) {
+                for (Map.Entry<String, Integer> entry : InventoryDropChance.globalConfig.getEnchantmentValues().entrySet()) {
+                    Enchantment enchantment = Enchantment.getByKey(NamespacedKey.fromString(entry.getKey()));
+                    System.out.println(enchantment);
+                    if (enchantment == null) return null;
+                    System.out.println(itemStack.getItemMeta().hasEnchant(enchantment));
+                    if (itemStack.getItemMeta().hasEnchant(enchantment)) {
+                        return random.nextInt(100) < entry.getValue();
+                    }
+                }
+            }
+            return null;
         });
 
         orders.put(GlobalConfig.Order.MATERIAL, (item, player) -> {

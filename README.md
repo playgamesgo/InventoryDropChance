@@ -34,6 +34,7 @@ if chance is applied to an item stack or each item in the stack individually, an
 - Default chance for all items
 - By the world name
 - By item material
+- By the enchantment
 - By the custom model data value
 - By the ItemsAdder namespace ID
 

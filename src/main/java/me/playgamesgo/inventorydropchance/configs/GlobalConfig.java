@@ -5,6 +5,7 @@ import eu.okaeri.configs.annotation.Comment;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 
 import java.util.*;
 
@@ -15,17 +16,19 @@ public final class GlobalConfig extends OkaeriConfig {
         ITEMSADDER,
         WORLDGUARD,
         CUSTOMMODELDATA,
+        ENCHANTMENT,
         MATERIAL,
         WORLD,
         DEFAULT
     }
 
     @Comment("Order of chance calculation, chance given by the command will have the highest priority and will work as FIRST_APPLY for that item")
-    @Comment("If element is not present, it will be ignored, possible values: ITEMSADDER, WORLDGUARD, CUSTOMMODELDATA, MATERIAL, WORLD, DEFAULT")
+    @Comment("If element is not present, it will be ignored, possible values: ITEMSADDER, WORLDGUARD, CUSTOMMODELDATA, ENCHANTMENT, MATERIAL, WORLD, DEFAULT")
     private LinkedList<Order> chanceOrder = new LinkedList<>(Arrays.asList(
             Order.ITEMSADDER,
             Order.WORLDGUARD,
             Order.CUSTOMMODELDATA,
+            Order.ENCHANTMENT,
             Order.MATERIAL,
             Order.WORLD,
             Order.DEFAULT
@@ -58,6 +61,13 @@ public final class GlobalConfig extends OkaeriConfig {
     private Map<Material, Integer> globalValues = new HashMap<>() {{
         put(Material.STICK, 50);
         put(Material.STONE, 10);
+    }};
+
+    @Comment()
+    @Comment("Default drop chance for items with specific enchantments, put {} to disable")
+    private Map<String, Integer> enchantmentValues = new HashMap<>() {{
+        put(Enchantment.LUCK.getKey().toString(), 40);
+        put("minecraft:soulbound", 100);
     }};
 
     @Comment()
