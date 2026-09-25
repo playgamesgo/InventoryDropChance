@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.playgamesgo'
-version = '1.9.2'
+version = '1.9.3'
 
 repositories {
     mavenCentral()
@@ -102,7 +102,7 @@ shadowJar {
 tasks {
     runServer {
         dependsOn("shadowJar")
-        minecraftVersion("26.2")
+        minecraftVersion("26.3")
 //        serverJar(new File("run/paper-26.2-36.jar"))
     }
 }
