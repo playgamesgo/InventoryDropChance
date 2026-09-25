@@ -62,9 +62,7 @@ public final class PlayerDeathListener implements Listener {
             if (itemStack.getItemMeta().hasEnchants()) {
                 for (Map.Entry<String, Integer> entry : InventoryDropChance.globalConfig.getEnchantmentValues().entrySet()) {
                     Enchantment enchantment = Enchantment.getByKey(NamespacedKey.fromString(entry.getKey()));
-                    System.out.println(enchantment);
                     if (enchantment == null) return null;
-                    System.out.println(itemStack.getItemMeta().hasEnchant(enchantment));
                     if (itemStack.getItemMeta().hasEnchant(enchantment)) {
                         return random.nextInt(100) < entry.getValue();
                     }

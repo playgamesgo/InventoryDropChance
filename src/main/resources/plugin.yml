@@ -1,6 +1,6 @@
 main: me.playgamesgo.inventorydropchance.InventoryDropChance
 name: InventoryDropChance
-version: 1.9.3
+version: 1.9.4
 description: Change the drop rate of items in the inventory on death
 author: playgamesgo
 softdepend:
