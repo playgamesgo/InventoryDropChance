@@ -43,12 +43,33 @@ public final class AxGravesIntegration implements Listener {
         location.add(0, -0.5, 0);
 
         if (storeXp) event.setDroppedExp(0);
-        Grave grave = new Grave(location, player, playerItems, xp, System.currentTimeMillis(), null);
+        Grave grave = new Grave(location, player, mergeItems(playerItems), xp, System.currentTimeMillis(), null);
         SpawnedGraves.addGrave(grave);
 
         final GraveSpawnEvent graveSpawnEvent = new GraveSpawnEvent(player, grave);
         Bukkit.getPluginManager().callEvent(graveSpawnEvent);
         graveItems.remove(player);
+    }
+
+    private static List<ItemStack> mergeItems(List<ItemStack> items) {
+        List<ItemStack> merged = new ArrayList<>();
+        for (ItemStack item : items) {
+            int remaining = item.getAmount();
+            for (ItemStack stack : merged) {
+                if (remaining <= 0) break;
+                if (!stack.isSimilar(item)) continue;
+                int add = Math.min(remaining, stack.getMaxStackSize() - stack.getAmount());
+                if (add <= 0) continue;
+                stack.setAmount(stack.getAmount() + add);
+                remaining -= add;
+            }
+            if (remaining > 0) {
+                ItemStack rest = item.clone();
+                rest.setAmount(remaining);
+                merged.add(rest);
+            }
+        }
+        return merged;
     }
 
     @EventHandler
